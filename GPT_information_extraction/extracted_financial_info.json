@@ -427,5 +427,72 @@
         }
       ]
     }
+  },
+  {
+    "original_text": "\nAdvanced Micro Devices is the number-two player in x86-based microprocessors, behind Intel, and -- with the 2008 acquisition of ATI -- a top player in graphic processors. In 2021, Advanced Micro Devices acquired Xilinx, expanding its presence in embedded computing and data center. ## Analyst's Notes Analysis by Jim Kelleher, CFA, February 1, 2023 ARGUS RATING: BUY - PC weakness, data center strength, caution ahead - Advanced Micro Devices posted 4Q22 non-GAAP results that exceeded guidance and consensus estimates. Total revenue was up $16 \\%$ despite weak client (PC) demand. - AMD posted a 16\\% annual decline in non-GAAP EPS for 4Q22, following 3Q22 results that included its first negative EPS comp since 2Q19. - AMD's client (PC) segment sales in 4Q22 were half the level of 4Q21 sales. Worldwide PC unit sales declined 29\\% in 4Q22 on top of a $15 \\%$ decline in 3Q22. - AMD's cautious 1Q23 guidance on revenue (down 10\\% year-over-year) reflects the challenging environment. Demand will likely remain weak into early 2023, although we look for sequential recovery as the year progresses. ## INVESTMENT THESIS BUY-rated Advanced Micro Devices Inc. (NGS: AMD) rose 7\\% in a down market on $2 / 1 / 23$ after the company delivered results that exceeded 4Q22 guidance. AMD posted 4Q22 revenue growth of $16 \\%$, while non-GAAP EPS fell $25 \\%$. AMD's client (PC) segment sales in 4Q22 were half the level of 4Q21 sales. For context, worldwide PC sales declined $29 \\%$ in 4Q22 on top of a $15 \\%$ decline in 3Q22. PC demand will likely remain weak into early 2023, although we look for sequential recovery as the year progresses. AMD's cautious 1Q23 revenue growth and gross margin guidance forecast reflects the challenging environment. Gaming-related sales declined year over year, reflecting both inflationary pressure on\n ",
+    "extracted": {
+      "snippets": [
+        {
+          "summary": "AMD is the number-two player in x86-based microprocessors.",
+          "quote": "Advanced Micro Devices is the number-two player in x86-based microprocessors, behind Intel, and -- with the 2008 acquisition of ATI -- a top player in graphic processors.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD acquired Xilinx in 2021.",
+          "quote": "In 2021, Advanced Micro Devices acquired Xilinx, expanding its presence in embedded computing and data center.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's 4Q22 non-GAAP results exceeded guidance and consensus estimates.",
+          "quote": "Advanced Micro Devices posted 4Q22 non-GAAP results that exceeded guidance and consensus estimates.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Total revenue was up 16% despite weak client demand.",
+          "quote": "Total revenue was up $16 %$ despite weak client (PC) demand.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD posted a 16% annual decline in non-GAAP EPS for 4Q22.",
+          "quote": "AMD posted a 16\\% annual decline in non-GAAP EPS for 4Q22, following 3Q22 results that included its first negative EPS comp since 2Q19.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's client segment sales in 4Q22 were half of 4Q21 sales.",
+          "quote": "AMD's client (PC) segment sales in 4Q22 were half the level of 4Q21 sales.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Worldwide PC unit sales declined 29% in 4Q22.",
+          "quote": "Worldwide PC unit sales declined 29\\% in 4Q22 on top of a $15 \\%$ decline in 3Q22.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's 1Q23 guidance reflects a challenging environment with a 10% revenue decline expected.",
+          "quote": "AMD's cautious 1Q23 guidance on revenue (down 10\\% year-over-year) reflects the challenging environment.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Demand is expected to remain weak into early 2023.",
+          "quote": "Demand will likely remain weak into early 2023, although we look for sequential recovery as the year progresses.",
+          "type": "Forecast"
+        },
+        {
+          "summary": "AMD's stock rose 7% on February 1, 2023.",
+          "quote": "BUY-rated Advanced Micro Devices Inc. (NGS: AMD) rose 7\\% in a down market on $2 / 1 / 23$ after the company delivered results that exceeded 4Q22 guidance.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's non-GAAP EPS fell 25% in 4Q22.",
+          "quote": "AMD posted 4Q22 revenue growth of $16 \\%$, while non-GAAP EPS fell $25 \\%$.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Gaming-related sales declined year over year due to inflationary pressure.",
+          "quote": "Gaming-related sales declined year over year, reflecting both inflationary pressure on.",
+          "type": "Statement"
+        }
+      ]
+    }
   }
 ]
