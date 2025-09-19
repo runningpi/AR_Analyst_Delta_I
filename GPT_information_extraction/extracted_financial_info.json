@@ -1,0 +1,431 @@
+[
+  {
+    "original_text": "\nAMD is up 16% year-to-date in 2023, while the peer group is\nup 15%. AMD declined 55% in 2022, while the Argus\nsemiconductor peer group fell 36%. AMD advanced 57% in 2021,\nversus a 34% gain for peer group; rose 100% in 2020, while peers\nadvanced 49%; was up 148% in 2019, while peers were up 54%;\nand rose 80% in 2018, compared with a 4% decline for peers.\nAMD, which has been as high as $154 late in 2021, was a sub-$2\nstock in 2015.\n For 4Q22, Advanced Micro Devices reported revenue of $6.0\nbillion, which was up 16% year-over-year and 1% sequentially.\nRevenue included a full contribution from Xilinx. Revenue\nexceeded the high end of the guidance range of $5.2-$5.8 billion\nand was nearly half a billion dollars above the consensus estimate\nof $5.5 billion. Non-GAAP profit totaled $0.69 per diluted share,\ndown 25% from $0.92 a year earlier and up $0.01 sequentially.\nAMD management does not provide explicit EPS guidance. The\nStreet had projected non-GAAP EPS of $0.67.\n As of mid-year 2022, AMD had delivered a long string of\nrecord quarters, powering through the pandemic and the supply\nchain crisis while taking share in multiple end-markets. The\nacquisition of Xilinx appeared to position AMD to build on\nexisting strength and growing presence in data center markets.\n The emergence of inflation at 40-year highs has changed global\nconsumer spending patterns and has had a particularly intense\nimpact in the consumer electronics space. For many companies,\nconsumer weakness has spilled into the enterprise, carrier, and\ncloud data-center end markets. Fueled by the Xilinx acquisition\nand its own competitive share gains, AMD was able to offset some\nof the most intense weakness in the client space with strong\nproduct sales in data center and embedded processing.\n CEO Lisa Su began by thanking former CFO Devinder Kumar\nfor a remarkable 39 years at AMD, and welcoming incoming CFO\nJean Hu. Over the past 14 years, she has served in the CFO role\n(and at times as interim CEO) at QLogic, Conexant, and Marvell.\n",
+    "extracted": {
+      "snippets": [
+        {
+          "summary": "AMD is up 16% year-to-date in 2023.",
+          "quote": "AMD is up 16% year-to-date in 2023"
+        },
+        {
+          "summary": "AMD declined 55% in 2022.",
+          "quote": "AMD declined 55% in 2022"
+        },
+        {
+          "summary": "AMD advanced 57% in 2021.",
+          "quote": "AMD advanced 57% in 2021"
+        },
+        {
+          "summary": "AMD rose 100% in 2020.",
+          "quote": "rose 100% in 2020"
+        },
+        {
+          "summary": "AMD was up 148% in 2019.",
+          "quote": "was up 148% in 2019"
+        },
+        {
+          "summary": "AMD rose 80% in 2018.",
+          "quote": "rose 80% in 2018"
+        },
+        {
+          "summary": "AMD was a sub-$2 stock in 2015.",
+          "quote": "was a sub-$2 stock in 2015"
+        },
+        {
+          "summary": "AMD reported 4Q22 revenue of $6.0 billion.",
+          "quote": "For 4Q22, Advanced Micro Devices reported revenue of $6.0 billion"
+        },
+        {
+          "summary": "4Q22 revenue was up 16% year-over-year.",
+          "quote": "which was up 16% year-over-year"
+        },
+        {
+          "summary": "4Q22 revenue was up 1% sequentially.",
+          "quote": "and 1% sequentially"
+        },
+        {
+          "summary": "4Q22 revenue exceeded the guidance range.",
+          "quote": "Revenue exceeded the high end of the guidance range of $5.2-$5.8 billion"
+        },
+        {
+          "summary": "4Q22 revenue was nearly half a billion dollars above consensus.",
+          "quote": "and was nearly half a billion dollars above the consensus estimate of $5.5 billion"
+        },
+        {
+          "summary": "4Q22 non-GAAP profit was $0.69 per diluted share.",
+          "quote": "Non-GAAP profit totaled $0.69 per diluted share"
+        },
+        {
+          "summary": "4Q22 non-GAAP profit was down 25% from a year earlier.",
+          "quote": "down 25% from $0.92 a year earlier"
+        },
+        {
+          "summary": "4Q22 non-GAAP profit was up $0.01 sequentially.",
+          "quote": "and up $0.01 sequentially"
+        },
+        {
+          "summary": "The Street projected non-GAAP EPS of $0.67.",
+          "quote": "The Street had projected non-GAAP EPS of $0.67"
+        },
+        {
+          "summary": "AMD had a long string of record quarters by mid-year 2022.",
+          "quote": "As of mid-year 2022, AMD had delivered a long string of record quarters"
+        },
+        {
+          "summary": "The Xilinx acquisition positioned AMD for growth in data centers.",
+          "quote": "The acquisition of Xilinx appeared to position AMD to build on existing strength and growing presence in data center markets"
+        },
+        {
+          "summary": "Inflation at 40-year highs changed global consumer spending patterns.",
+          "quote": "The emergence of inflation at 40-year highs has changed global consumer spending patterns"
+        },
+        {
+          "summary": "AMD offset client space weakness with data center and embedded processing sales.",
+          "quote": "AMD was able to offset some of the most intense weakness in the client space with strong product sales in data center and embedded processing"
+        },
+        {
+          "summary": "CEO Lisa Su thanked former CFO Devinder Kumar for 39 years at AMD.",
+          "quote": "CEO Lisa Su began by thanking former CFO Devinder Kumar for a remarkable 39 years at AMD"
+        },
+        {
+          "summary": "Jean Hu is the incoming CFO of AMD.",
+          "quote": "and welcoming incoming CFO Jean Hu"
+        },
+        {
+          "summary": "Jean Hu served as CFO and interim CEO at QLogic, Conexant, and Marvell.",
+          "quote": "Over the past 14 years, she has served in the CFO role (and at times as interim CEO) at QLogic, Conexant, and Marvell"
+        }
+      ]
+    }
+  },
+  {
+    "original_text": "\nBUY-rated Advanced Micro Devices Inc. (NGS: AMD) rose 7% in a down market on\n2/1/23 after the company delivered results that exceeded 4Q22 guidance. AMD posted\n4Q22 revenue growth of 16%, while non-GAAP EPS fell 25%.\n AMD's client (PC) segment sales in 4Q22 were half the level of 4Q21 sales. For\ncontext, worldwide PC sales declined 29% in 4Q22 on top of a 15% decline in 3Q22. PC\ndemand will likely remain weak into early 2023, although we look for sequential recovery\nas the year progresses. AMD's cautious 1Q23 revenue growth and gross margin guidance\nforecast reflects the challenging environment.\n Gaming-related sales declined year over year, reflecting both inflationary pressure on\ndiscretionary purchases as well as long-in-the-tooth gaming consoles from the major\nOEMs. Embedded has become a $4.5 billion annual business for AMD, compared with\n$1.25 billion for 2021; that is mainly though not exclusively due to the Xilinx acquisition.\nData Center grew 42% year-over-year in 4Q and 64% for the year. Now a $6 billion\nannual business, data center is driven by market share gains for AMD's EPYC server CPUs.\n As Intel's recent quarterly releases have made clear, AMD has gained meaningful global\nmarket share in CPUs for the data center and client space in the past several years. AMD\ndelivered full-year 2022 revenue growth of 44%, on top of 68% growth in 2021 reflecting multi-year gains in market share. The early 2023 growth outlook is\nuncertain. But share gains in client and in data center, market\nleadership in console gaming, and the much enhanced embedded\nbusiness position AMD for long-term growth exceeding those of\nthe market and the peer group.\n AMD has announced that long-time finance industry\nprofessional Jean Hu is joining the company as CFO. She replaces\nDevinder Kumar, who is retiring. CFO. Hu has served in the CFO\nrole (and at times as interim CEO) at QLogic, Conexant, and\nMarvell, along with other postings. She is well-respected in\nfinancial circles, and we believe she will benefit the already strong\nleadership team at AMD.\n In our view, the share price does not fully reflect AMD's\nlong-term revenue and margin growth potential, along with\nongoing market share gains at Intel's expense. We are reiterating\nour BUY rating and 12-month target price of $100.",
+    "extracted": {
+      "snippets": [
+        {
+          "summary": "AMD rose 7% on 2/1/23.",
+          "quote": "BUY-rated Advanced Micro Devices Inc. (NGS: AMD) rose 7% in a down market on 2/1/23 after the company delivered results that exceeded 4Q22 guidance."
+        },
+        {
+          "summary": "AMD's 4Q22 revenue grew 16%.",
+          "quote": "AMD posted 4Q22 revenue growth of 16%, while non-GAAP EPS fell 25%."
+        },
+        {
+          "summary": "AMD's non-GAAP EPS fell 25% in 4Q22.",
+          "quote": "AMD posted 4Q22 revenue growth of 16%, while non-GAAP EPS fell 25%."
+        },
+        {
+          "summary": "AMD's client segment sales in 4Q22 were half of 4Q21.",
+          "quote": "AMD's client (PC) segment sales in 4Q22 were half the level of 4Q21 sales."
+        },
+        {
+          "summary": "Worldwide PC sales declined 29% in 4Q22.",
+          "quote": "For context, worldwide PC sales declined 29% in 4Q22 on top of a 15% decline in 3Q22."
+        },
+        {
+          "summary": "Worldwide PC sales declined 15% in 3Q22.",
+          "quote": "For context, worldwide PC sales declined 29% in 4Q22 on top of a 15% decline in 3Q22."
+        },
+        {
+          "summary": "AMD's 1Q23 guidance reflects a challenging environment.",
+          "quote": "AMD's cautious 1Q23 revenue growth and gross margin guidance forecast reflects the challenging environment."
+        },
+        {
+          "summary": "Gaming-related sales declined year over year.",
+          "quote": "Gaming-related sales declined year over year, reflecting both inflationary pressure on discretionary purchases as well as long-in-the-tooth gaming consoles from the major OEMs."
+        },
+        {
+          "summary": "AMD's embedded business is now $4.5 billion annually.",
+          "quote": "Embedded has become a $4.5 billion annual business for AMD, compared with $1.25 billion for 2021; that is mainly though not exclusively due to the Xilinx acquisition."
+        },
+        {
+          "summary": "AMD's embedded business was $1.25 billion in 2021.",
+          "quote": "Embedded has become a $4.5 billion annual business for AMD, compared with $1.25 billion for 2021; that is mainly though not exclusively due to the Xilinx acquisition."
+        },
+        {
+          "summary": "Data Center grew 42% year-over-year in 4Q.",
+          "quote": "Data Center grew 42% year-over-year in 4Q and 64% for the year."
+        },
+        {
+          "summary": "Data Center grew 64% for the year.",
+          "quote": "Data Center grew 42% year-over-year in 4Q and 64% for the year."
+        },
+        {
+          "summary": "Data Center is now a $6 billion annual business.",
+          "quote": "Now a $6 billion annual business, data center is driven by market share gains for AMD's EPYC server CPUs."
+        },
+        {
+          "summary": "AMD gained market share in CPUs for data center and client space.",
+          "quote": "As Intel's recent quarterly releases have made clear, AMD has gained meaningful global market share in CPUs for the data center and client space in the past several years."
+        },
+        {
+          "summary": "AMD's full-year 2022 revenue grew 44%.",
+          "quote": "AMD delivered full-year 2022 revenue growth of 44%, on top of 68% growth in 2021 reflecting multi-year gains in market share."
+        },
+        {
+          "summary": "AMD's revenue grew 68% in 2021.",
+          "quote": "AMD delivered full-year 2022 revenue growth of 44%, on top of 68% growth in 2021 reflecting multi-year gains in market share."
+        },
+        {
+          "summary": "Jean Hu is joining AMD as CFO.",
+          "quote": "AMD has announced that long-time finance industry professional Jean Hu is joining the company as CFO."
+        },
+        {
+          "summary": "Jean Hu replaces Devinder Kumar as CFO.",
+          "quote": "She replaces Devinder Kumar, who is retiring."
+        },
+        {
+          "summary": "Jean Hu has served as CFO and interim CEO at QLogic, Conexant, and Marvell.",
+          "quote": "Hu has served in the CFO role (and at times as interim CEO) at QLogic, Conexant, and Marvell, along with other postings."
+        },
+        {
+          "summary": "AMD's share price does not fully reflect its long-term potential.",
+          "quote": "In our view, the share price does not fully reflect AMD's long-term revenue and margin growth potential, along with ongoing market share gains at Intel's expense."
+        },
+        {
+          "summary": "The BUY rating and 12-month target price of $100 are reiterated.",
+          "quote": "We are reiterating our BUY rating and 12-month target price of $100."
+        }
+      ]
+    }
+  },
+  {
+    "original_text": "\nBUY-rated Advanced Micro Devices Inc. (NGS: AMD) rose 7% in a down market on\n2/1/23 after the company delivered results that exceeded 4Q22 guidance. AMD posted\n4Q22 revenue growth of 16%, while non-GAAP EPS fell 25%.\n AMD's client (PC) segment sales in 4Q22 were half the level of 4Q21 sales. For\ncontext, worldwide PC sales declined 29% in 4Q22 on top of a 15% decline in 3Q22. PC\ndemand will likely remain weak into early 2023, although we look for sequential recovery\nas the year progresses. AMD's cautious 1Q23 revenue growth and gross margin guidance\nforecast reflects the challenging environment.\n Gaming-related sales declined year over year, reflecting both inflationary pressure on\ndiscretionary purchases as well as long-in-the-tooth gaming consoles from the major\nOEMs. Embedded has become a $4.5 billion annual business for AMD, compared with\n$1.25 billion for 2021; that is mainly though not exclusively due to the Xilinx acquisition.\nData Center grew 42% year-over-year in 4Q and 64% for the year. Now a $6 billion\nannual business, data center is driven by market share gains for AMD's EPYC server CPUs.\n As Intel's recent quarterly releases have made clear, AMD has gained meaningful global\nmarket share in CPUs for the data center and client space in the past several years. AMD\ndelivered full-year 2022 revenue growth of 44%, on top of 68% growth in 2021 reflecting multi-year gains in market share. The early 2023 growth outlook is\nuncertain. But share gains in client and in data center, market\nleadership in console gaming, and the much enhanced embedded\nbusiness position AMD for long-term growth exceeding those of\nthe market and the peer group.\n AMD has announced that long-time finance industry\nprofessional Jean Hu is joining the company as CFO. She replaces\nDevinder Kumar, who is retiring. CFO. Hu has served in the CFO\nrole (and at times as interim CEO) at QLogic, Conexant, and\nMarvell, along with other postings. She is well-respected in\nfinancial circles, and we believe she will benefit the already strong\nleadership team at AMD.\n In our view, the share price does not fully reflect AMD's\nlong-term revenue and margin growth potential, along with\nongoing market share gains at Intel's expense. We are reiterating\nour BUY rating and 12-month target price of $100.",
+    "extracted": {
+      "snippets": [
+        {
+          "summary": "AMD rose 7% on 2/1/23.",
+          "quote": "BUY-rated Advanced Micro Devices Inc. (NGS: AMD) rose 7% in a down market on 2/1/23 after the company delivered results that exceeded 4Q22 guidance.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's 4Q22 revenue grew 16%.",
+          "quote": "AMD posted 4Q22 revenue growth of 16%, while non-GAAP EPS fell 25%.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's non-GAAP EPS fell 25% in 4Q22.",
+          "quote": "AMD posted 4Q22 revenue growth of 16%, while non-GAAP EPS fell 25%.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's client segment sales in 4Q22 were half of 4Q21.",
+          "quote": "AMD's client (PC) segment sales in 4Q22 were half the level of 4Q21 sales.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Worldwide PC sales declined 29% in 4Q22.",
+          "quote": "For context, worldwide PC sales declined 29% in 4Q22 on top of a 15% decline in 3Q22.",
+          "type": "Statement"
+        },
+        {
+          "summary": "PC demand will likely remain weak into early 2023.",
+          "quote": "PC demand will likely remain weak into early 2023, although we look for sequential recovery as the year progresses.",
+          "type": "Forecast"
+        },
+        {
+          "summary": "AMD's 1Q23 guidance reflects a challenging environment.",
+          "quote": "AMD's cautious 1Q23 revenue growth and gross margin guidance forecast reflects the challenging environment.",
+          "type": "Evaluation"
+        },
+        {
+          "summary": "Gaming-related sales declined year over year.",
+          "quote": "Gaming-related sales declined year over year, reflecting both inflationary pressure on discretionary purchases as well as long-in-the-tooth gaming consoles from the major OEMs.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Embedded business is now a $4.5 billion annual business for AMD.",
+          "quote": "Embedded has become a $4.5 billion annual business for AMD, compared with $1.25 billion for 2021; that is mainly though not exclusively due to the Xilinx acquisition.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Data Center grew 42% year-over-year in 4Q.",
+          "quote": "Data Center grew 42% year-over-year in 4Q and 64% for the year.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Data Center is now a $6 billion annual business.",
+          "quote": "Now a $6 billion annual business, data center is driven by market share gains for AMD's EPYC server CPUs.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD gained meaningful global market share in CPUs.",
+          "quote": "As Intel's recent quarterly releases have made clear, AMD has gained meaningful global market share in CPUs for the data center and client space in the past several years.",
+          "type": "Statement"
+        },
+        {
+          "summary": "AMD's full-year 2022 revenue grew 44%.",
+          "quote": "AMD delivered full-year 2022 revenue growth of 44%, on top of 68% growth in 2021 reflecting multi-year gains in market share.",
+          "type": "Statement"
+        },
+        {
+          "summary": "The early 2023 growth outlook is uncertain.",
+          "quote": "The early 2023 growth outlook is uncertain.",
+          "type": "Evaluation"
+        },
+        {
+          "summary": "AMD is positioned for long-term growth exceeding the market.",
+          "quote": "But share gains in client and in data center, market leadership in console gaming, and the much enhanced embedded business position AMD for long-term growth exceeding those of the market and the peer group.",
+          "type": "Evaluation"
+        },
+        {
+          "summary": "Jean Hu is joining AMD as CFO.",
+          "quote": "AMD has announced that long-time finance industry professional Jean Hu is joining the company as CFO.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Jean Hu replaces Devinder Kumar as CFO.",
+          "quote": "She replaces Devinder Kumar, who is retiring.",
+          "type": "Statement"
+        },
+        {
+          "summary": "Jean Hu is well-respected in financial circles.",
+          "quote": "She is well-respected in financial circles, and we believe she will benefit the already strong leadership team at AMD.",
+          "type": "Evaluation"
+        },
+        {
+          "summary": "AMD's share price does not fully reflect its long-term potential.",
+          "quote": "In our view, the share price does not fully reflect AMD's long-term revenue and margin growth potential, along with ongoing market share gains at Intel's expense.",
+          "type": "Evaluation"
+        },
+        {
+          "summary": "Reiterating BUY rating and 12-month target price of $100.",
+          "quote": "We are reiterating our BUY rating and 12-month target price of $100.",
+          "type": "Statement"
+        }
+      ]
+    }
+  },
+  {
+    "original_text": "\n | Target Price | $\\$ 100.00$ | | 52 Week Price Range | $\\$ 54.57$ to $\\$ 132.96$ | | Shares Outstanding | 1.61 Billion | | Dividend | $\\$ 0.00$ | Sector Overview | Sector | Technology | | :-- | --: | | Sector Rating | MARKET WEIGHT | | Total \\% of S\\&P 500 Market Cap. | $25.00 \\%$ | Financial Strength | Financial Strength Rating | MEDIUM-HIGH | | :-- | --: | | Debt/Capital Ratio | $8.9 \\%$ | | Return on Equity | $10.7 \\%$ | | Net Margin | $5.6 \\%$ | | Payout Ratio | - | | Current Ratio | 2.02 | | Revenue | $\\$ 23.60$ Billion | | After-Tax Income | $\\$ 1.32$ Billion | ## Valuation | Current FY P/E | 21.53 | | :-- | --: | | Prior FY P/E | 21.78 | | Price/Sales | 5.13 | | Price/Book | 2.22 | | Book Value/Share | $\\$ 33.83$ | | Market Capitalization | $\\$ 121.17$ Billion | Forecasted Growth 1 Year EPS Growth Forecast 1.16\\% 5 Year EPS Growth Forecast 10.00\\% 1 Year Dividend Growth Forecast N/A Risk Beta 1.55 Institutional Ownership $67.88 \\%$\",",
+    "extracted": {
+      "snippets": [
+        {
+          "summary": "Target price is $100.00.",
+          "quote": "Target Price | $100.00",
+          "type": "Statement"
+        },
+        {
+          "summary": "52-week price range is $54.57 to $132.96.",
+          "quote": "52 Week Price Range | $54.57 to $132.96",
+          "type": "Statement"
+        },
+        {
+          "summary": "Shares outstanding are 1.61 billion.",
+          "quote": "Shares Outstanding | 1.61 Billion",
+          "type": "Statement"
+        },
+        {
+          "summary": "Dividend is $0.00.",
+          "quote": "Dividend | $0.00",
+          "type": "Statement"
+        },
+        {
+          "summary": "Sector is Technology.",
+          "quote": "Sector | Technology",
+          "type": "Statement"
+        },
+        {
+          "summary": "Sector rating is MARKET WEIGHT.",
+          "quote": "Sector Rating | MARKET WEIGHT",
+          "type": "Evaluation"
+        },
+        {
+          "summary": "Total percentage of S&P 500 market cap is 25.00%.",
+          "quote": "Total % of S&P 500 Market Cap. | $25.00 %",
+          "type": "Statement"
+        },
+        {
+          "summary": "Financial strength rating is MEDIUM-HIGH.",
+          "quote": "Financial Strength Rating | MEDIUM-HIGH",
+          "type": "Evaluation"
+        },
+        {
+          "summary": "Debt/Capital ratio is 8.9%.",
+          "quote": "Debt/Capital Ratio | $8.9 %",
+          "type": "Statement"
+        },
+        {
+          "summary": "Return on equity is 10.7%.",
+          "quote": "Return on Equity | $10.7 %",
+          "type": "Statement"
+        },
+        {
+          "summary": "Net margin is 5.6%.",
+          "quote": "Net Margin | $5.6 %",
+          "type": "Statement"
+        },
+        {
+          "summary": "Current ratio is 2.02.",
+          "quote": "Current Ratio | 2.02",
+          "type": "Statement"
+        },
+        {
+          "summary": "Revenue is $23.60 billion.",
+          "quote": "Revenue | $23.60 Billion",
+          "type": "Statement"
+        },
+        {
+          "summary": "After-tax income is $1.32 billion.",
+          "quote": "After-Tax Income | $1.32 Billion",
+          "type": "Statement"
+        },
+        {
+          "summary": "Current fiscal year P/E is 21.53.",
+          "quote": "Current FY P/E | 21.53",
+          "type": "Statement"
+        },
+        {
+          "summary": "Prior fiscal year P/E is 21.78.",
+          "quote": "Prior FY P/E | 21.78",
+          "type": "Statement"
+        },
+        {
+          "summary": "Price/Sales ratio is 5.13.",
+          "quote": "Price/Sales | 5.13",
+          "type": "Statement"
+        },
+        {
+          "summary": "Price/Book ratio is 2.22.",
+          "quote": "Price/Book | 2.22",
+          "type": "Statement"
+        },
+        {
+          "summary": "Book value per share is $33.83.",
+          "quote": "Book Value/Share | $33.83",
+          "type": "Statement"
+        },
+        {
+          "summary": "Market capitalization is $121.17 billion.",
+          "quote": "Market Capitalization | $121.17 Billion",
+          "type": "Statement"
+        },
+        {
+          "summary": "1-year EPS growth forecast is 1.16%.",
+          "quote": "1 Year EPS Growth Forecast 1.16%",
+          "type": "Forecast"
+        },
+        {
+          "summary": "5-year EPS growth forecast is 10.00%.",
+          "quote": "5 Year EPS Growth Forecast 10.00%",
+          "type": "Forecast"
+        },
+        {
+          "summary": "1-year dividend growth forecast is not available.",
+          "quote": "1 Year Dividend Growth Forecast N/A",
+          "type": "Forecast"
+        },
+        {
+          "summary": "Beta is 1.55.",
+          "quote": "Beta 1.55",
+          "type": "Statement"
+        },
+        {
+          "summary": "Institutional ownership is 67.88%.",
+          "quote": "Institutional Ownership $67.88 %",
+          "type": "Statement"
+        }
+      ]
+    }
+  }
+]
