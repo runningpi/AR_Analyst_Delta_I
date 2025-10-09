@@ -1,0 +1,98 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+ENV/
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+pipeline.log
+logging/
+
+# Old general output directory (deprecated - using subdirectories now)
+output/
+
+# Output files
+*.json
+!settings.json
+!package.json
+
+# Knowledge base storage
+RAG_and_knowledgebase/kb_storage/
+*/kb_storage/
+
+# OCR content (can be large, regenerate from PDFs)
+Decomposition_AR/ocr_content/*/
+
+# Classified sentences cache (can regenerate)
+Decomposition_AR/output/classified_sentences/*/
+
+# RAG query results cache (can regenerate)
+RAG_and_knowledgebase/output/*/
+
+# Evaluation results cache (can regenerate)
+Evaluation/output/*/
+
+# Final analysis and reports (can regenerate)
+Analysis/output/*/
+
+# Temporary files
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Data files (optional - uncomment if you don't want to commit data)
+# data/
+# *.pdf
+# *.csv
+
+# Cache
+.cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Model files
+*.pkl
+*.h5
+*.pth
+

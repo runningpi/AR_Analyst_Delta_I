@@ -1,0 +1,32 @@
+# AR Analyst Delta I Pipeline Dependencies
+
+# Core dependencies
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# OpenAI and LLM
+openai>=1.0.0
+
+# DS-RAG
+dsrag>=0.5.3
+langchain-text-splitters>=0.3.0
+langchain-core>=0.3.0
+
+# Cohere (for reranking)
+cohere>=4.0.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.20.0
+
+# Document processing (Docling OCR)
+docling>=1.0.0
+
+# Utils
+tqdm>=4.65.0
+tiktoken>=0.5.0
+
+# Testing (optional)
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
