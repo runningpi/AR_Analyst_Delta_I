@@ -57,9 +57,13 @@ Analysis_Pipeline/
 │   ├── settings.config                  # Pipeline settings
 │   └── requirements.txt                 # Dependencies
 │
-├── 🎯 core/                             # Orchestration Layer
+├── 🎯 core/                             # Orchestration & Data Models
 │   ├── pipeline.py                      # Main pipeline orchestrator
-│   └── analysis.py                      # Analysis & reporting utilities
+│   ├── analysis.py                      # Analysis & reporting utilities
+│   └── models/                          # Data models (Pydantic)
+│       ├── sentence.py
+│       ├── evaluation.py
+│       └── section.py
 │
 ├── 📊 Pipeline Stages
 │   ├── Decomposition_AR/                # Stage 1 & 2: OCR & Classification
@@ -82,9 +86,6 @@ Analysis_Pipeline/
 │   │
 │   └── Analysis/                        # Stage 5: Final Reports
 │       └── output/[PDF_NAME]/           # 📦 Final analysis reports
-│
-├── 🔧 Support Modules
-│   └── models/                          # Data models (Pydantic)
 │
 └── 📝 data/                             # Input data
     └── [COMPANY]/[QUARTER]/

@@ -10,7 +10,7 @@ from typing import Dict, List, Any, Optional
 from collections import Counter
 import pandas as pd
 
-from models.evaluation import EvaluationLabel
+from core.models.evaluation import EvaluationLabel
 
 logger = logging.getLogger(__name__)
 

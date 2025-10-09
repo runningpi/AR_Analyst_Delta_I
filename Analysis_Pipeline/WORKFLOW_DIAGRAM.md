@@ -248,7 +248,13 @@ Analysis (Statistics, Reports, Insights)
 ```
 analyse_delta_i_for_one_AR.py
     ↓
-pipeline.py
+core/
+├── pipeline.py (main orchestrator)
+├── analysis.py (reporting & stats)
+└── models/
+    ├── sentence.py
+    ├── evaluation.py
+    └── section.py
     ↓
 ├── config.py
 ├── Decomposition_AR/
@@ -258,14 +264,9 @@ pipeline.py
 ├── RAG_and_knowledgebase/
 │   ├── DS_RAG_utils.py
 │   └── matching_utils.py
-├── Evaluation/
-│   ├── evaluation_utils.py
-│   └── evaluation_service.py
-├── models/
-│   ├── sentence.py
-│   ├── evaluation.py
-│   └── section.py
-└── analysis.py
+└── Evaluation/
+    ├── evaluation_utils.py
+    └── evaluation_service.py
 ```
 
 ## Key Metrics

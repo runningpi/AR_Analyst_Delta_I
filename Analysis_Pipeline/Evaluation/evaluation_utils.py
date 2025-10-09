@@ -10,7 +10,7 @@ import logging
 from typing import List, Dict, Any
 from openai import OpenAI
 
-from models.evaluation import EvaluationLabel, EvaluationResult, SentenceEvaluation
+from core.models.evaluation import EvaluationLabel, EvaluationResult, SentenceEvaluation
 from RAG_and_knowledgebase.matching_utils import EvidenceFormatter
 
 logger = logging.getLogger(__name__)

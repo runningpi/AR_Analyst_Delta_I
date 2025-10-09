@@ -14,7 +14,7 @@ from typing import List, Dict
 from itertools import islice
 from openai import OpenAI
 
-from models.sentence import SentenceSource, ClassifiedSentence
+from core.models.sentence import SentenceSource, ClassifiedSentence
 
 logger = logging.getLogger(__name__)
 
