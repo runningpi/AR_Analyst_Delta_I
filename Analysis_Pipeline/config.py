@@ -38,7 +38,7 @@ class PipelineConfig:
     chunk_size: int = 200
     
     # DS-RAG Configuration
-    use_semantic_sectioning: bool = False
+    use_semantic_sectioning: bool = True
     
     
     @classmethod

@@ -23,12 +23,16 @@ from core.pipeline import ARAnalysisPipeline
 # Configure logging
 def setup_logging(log_level: str = "INFO") -> None:
     """Setup logging configuration."""
+    # Create logging directory if it doesn't exist
+    log_dir = Path('logging')
+    log_dir.mkdir(exist_ok=True)
+    
     logging.basicConfig(
         level=getattr(logging, log_level.upper()),
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.StreamHandler(),
-            logging.FileHandler('logging/pipeline.log'),
+            logging.FileHandler(log_dir / 'pipeline.log'),
         ]
     )
 

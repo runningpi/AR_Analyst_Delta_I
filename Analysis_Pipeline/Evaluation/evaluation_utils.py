@@ -28,7 +28,6 @@ Return a JSON object with two keys:
 Definitions:
 - Supported: The evidence fully backs the claim in the snippet
 - Partially Supported: The evidence partially backs the claim, but some aspects are missing
-- Not Supported: The evidence doesn't back the claim
 - Contradicted: The evidence directly contradicts the claim
 - No Evidence: No relevant evidence was found in the knowledge base
 """
