@@ -22,7 +22,7 @@ class EvaluationService:
     SYSTEM_PROMPT = """You are an expert financial analyst.
 Evaluate whether the provided Knowledge Base evidence supports the snippet.
 Return a JSON object with two keys:
-- evaluation: one of [Supported, Partially Supported, Not Supported, Contradicted, No Evidence]
+- evaluation: one of [Supported, Partially Supported, Contradicted, No Evidence]
 - reason: a short explanation.
 
 Definitions:
