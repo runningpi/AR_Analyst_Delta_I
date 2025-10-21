@@ -87,7 +87,7 @@ Analysis_Pipeline/
 │   └── Analysis/                        # Stage 5: Final Reports
 │       └── output/[PDF_NAME]/           # 📦 Final analysis reports
 │
-└── 📝 data/                             # Input data
+└── 📝 00_data/                          # Input data
     └── [COMPANY]/[QUARTER]/
         ├── analyst_report/              # Analyst reports (PDFs)
         └── company_reports/             # Company documents (PDFs)
@@ -123,8 +123,8 @@ COHERE_API_KEY=your_cohere_key_here  # Optional, for reranking
 Edit `settings.config` to point to your data:
 ```ini
 env_file=.env
-analyst_report=data/COMPANY/QUARTER/analyst_report/report.pdf
-company_data_dir=data/COMPANY/QUARTER/company_reports
+analyst_report=00_data/COMPANY/QUARTER/analyst_report/report.pdf
+company_data_dir=00_data/COMPANY/QUARTER/company_reports
 ```
 
 ### 3. Run the Pipeline
@@ -230,8 +230,8 @@ Contradicted: 2 (1.3%)       ← Contradicts company statements
 
 ```ini
 env_file=.env
-analyst_report=data/AMD_2022_Q4/analyst_report/report.pdf
-company_data_dir=data/AMD_2022_Q4/company_reports
+analyst_report=00_data/AMD_2022_Q4/analyst_report/report.pdf
+company_data_dir=00_data/AMD_2022_Q4/company_reports
 ```
 
 ### config.py (Advanced)

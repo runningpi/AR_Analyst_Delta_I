@@ -17,14 +17,21 @@ from typing import Optional
 sys.path.insert(0, str(Path(__file__).parent))
 
 from config import PipelineConfig
-from core.pipeline import ARAnalysisPipeline
+
+# Import pipeline using dynamic import to handle numbered folder names
+core_pipeline = __import__('00_core.pipeline', fromlist=['ARAnalysisPipeline'])
+ARAnalysisPipeline = core_pipeline.ARAnalysisPipeline
+
+# Import SEC filings downloader
+sec_downloader = __import__('00_download_sec_filings.sec_filings_downloader', fromlist=['SECFilingsDownloader'])
+SECFilingsDownloader = sec_downloader.SECFilingsDownloader
 
 
 # Configure logging
 def setup_logging(log_level: str = "INFO") -> None:
     """Setup logging configuration."""
     # Create logging directory if it doesn't exist
-    log_dir = Path('logging')
+    log_dir = Path('05_logging')
     log_dir.mkdir(exist_ok=True)
     
     logging.basicConfig(
@@ -35,6 +42,41 @@ def setup_logging(log_level: str = "INFO") -> None:
             logging.FileHandler(log_dir / 'pipeline.log'),
         ]
     )
+
+
+def download_sec_filings(config: PipelineConfig) -> None:
+    """Download SEC filings if enabled in configuration."""
+    logger = logging.getLogger(__name__)
+    
+    if not config.download_sec_filings:
+        logger.info("SEC filings download is disabled in configuration")
+        return
+    
+    logger.info("SEC filings download is enabled - starting download...")
+    
+    try:
+        # Initialize SEC filings downloader
+        downloader = SECFilingsDownloader(
+            user_name="Max Althaus",
+            user_email="max.althaus@example.com",
+            company_cik="0000002488",
+            company_name="AMD",
+            base_output_dir=str(config.company_data_dir)
+        )
+        
+        # Download filings
+        results = downloader.run_complete_pipeline(
+            form_types=["10-K", "10-Q", "8-K"],
+            start_year=2013,
+            end_year=2023
+        )
+        
+        logger.info("SEC filings download completed successfully")
+        logger.info(f"Downloaded files: {results}")
+        
+    except Exception as e:
+        logger.error(f"SEC filings download failed: {e}")
+        logger.warning("Continuing with existing company data files...")
 
 
 def main(
@@ -63,6 +105,9 @@ def main(
         logger.info("Configuration loaded successfully")
         logger.info(f"\n{config}")
         
+        # Download SEC filings if enabled
+        download_sec_filings(config)
+        
         # Initialize pipeline
         pipeline = ARAnalysisPipeline(config)
         
@@ -90,7 +135,8 @@ def main(
                     extracted_path = config.get_output_path("extracted_sentences.json")
                     if extracted_path.exists():
                         logger.info(f"Trying to load pre-extracted sentences from: {extracted_path}")
-                        from Decomposition_AR.text_mangement_utils import TextManager
+                        decomposition_module = __import__('01_Decomposition_AR.text_mangement_utils', fromlist=['TextManager'])
+                        TextManager = decomposition_module.TextManager
                         text_manager = TextManager()
                         sections = text_manager.load_sections_from_json(extracted_path)
                         
@@ -121,10 +167,10 @@ def main(
         print(f"Contradicted: {coverage['contradicted']} ({coverage['contradicted_percentage']}%)")
         
         print(f"\nResults saved to stage-specific directories:")
-        print(f"  - Analysis reports: Analysis/output/{config.analyst_report_path.stem}/")
-        print(f"  - Evaluations: Evaluation/output/{config.analyst_report_path.stem}/")
-        print(f"  - KB queries: RAG_and_knowledgebase/output/{config.analyst_report_path.stem}/")
-        print(f"  - Classifications: Decomposition_AR/output/classified_sentences/{config.analyst_report_path.stem}/")
+        print(f"  - Analysis reports: 04_Analysis/output/{config.analyst_report_path.stem}/")
+        print(f"  - Evaluations: 03_Evaluation/output/{config.analyst_report_path.stem}/")
+        print(f"  - KB queries: 02_RAG_and_knowledgebase/output/{config.analyst_report_path.stem}/")
+        print(f"  - Classifications: 01_Decomposition_AR/output/classified_sentences/{config.analyst_report_path.stem}/")
         print("=" * 80 + "\n")
         
     except Exception as e:

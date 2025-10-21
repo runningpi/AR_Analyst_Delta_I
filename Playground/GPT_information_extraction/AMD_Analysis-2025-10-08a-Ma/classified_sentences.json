@@ -52,7 +52,7 @@
     },
     {
       "sentence": "AMD's cautious 1Q23 revenue growth and gross margin guidance forecast reflects the challenging environment.",
-      "source": "corporate_information"
+      "source": "analyst_interpretation"
     },
     {
       "sentence": "Gaming-related sales declined year over year, reflecting both inflationary pressure on discretionary purchases as well as long-in-the-tooth gaming consoles from the major OEMs.",
@@ -576,7 +576,7 @@
     },
     {
       "sentence": "AMD trades at a two-year forward P/E of 18.1, compared to a multiple of 42.6 for the 2018-2021 period.",
-      "source": "corporate_information"
+      "source": "analyst_interpretation"
     },
     {
       "sentence": "The two-year-forward relative P/E of 1.05 is just above the market P/E and remains well below the historical average for 2018-2021 of 2.19.",

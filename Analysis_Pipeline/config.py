@@ -40,6 +40,9 @@ class PipelineConfig:
     # DS-RAG Configuration
     use_semantic_sectioning: bool = True
     
+    # SEC Filings Download Configuration
+    download_sec_filings: bool = False
+    
     
     @classmethod
     def from_settings_file(cls, settings_path: str = "settings.config") -> "PipelineConfig":
@@ -91,10 +94,13 @@ class PipelineConfig:
         if not company_data.is_absolute():
             company_data = base_dir / company_data
         
+        # Parse download_sec_filings setting
+        download_sec_filings = config_dict.get('download_sec_filings', 'false').lower() == 'true'
+        
         # Setup directory paths
         # All outputs now go to stage-specific subdirectories
         output_dir = base_dir / "output"
-        kb_storage_dir = base_dir / "RAG_and_knowledgebase" / "kb_storage"
+        kb_storage_dir = base_dir / "02_RAG_and_knowledgebase" / "kb_storage"
         
         # Only create KB storage (output directories created by each stage as needed)
         kb_storage_dir.mkdir(parents=True, exist_ok=True)
@@ -107,6 +113,7 @@ class PipelineConfig:
             kb_storage_dir=kb_storage_dir,
             openai_api_key=os.getenv('OPENAI_API_KEY'),
             cohere_api_key=os.getenv('COHERE_API_KEY'),
+            download_sec_filings=download_sec_filings,
         )
     
     

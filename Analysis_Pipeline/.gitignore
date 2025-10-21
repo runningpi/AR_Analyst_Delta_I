@@ -55,6 +55,10 @@ output/
 RAG_and_knowledgebase/kb_storage/
 */kb_storage/
 
+# Data directories
+00_data/AMD/
+00_data/*/
+
 # OCR content (can be large, regenerate from PDFs)
 #Decomposition_AR/ocr_content/*/
 
