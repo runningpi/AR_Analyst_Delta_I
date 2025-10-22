@@ -23,8 +23,10 @@ core_pipeline = __import__('00_core.pipeline', fromlist=['ARAnalysisPipeline'])
 ARAnalysisPipeline = core_pipeline.ARAnalysisPipeline
 
 # Import SEC filings downloader
-sec_downloader = __import__('00_download_sec_filings.amd_8k_complete_pipeline', fromlist=['AMDSECFilingsDownloader'])
-AMDSECFilingsDownloader = sec_downloader.AMDSECFilingsDownloader
+import sys
+from pathlib import Path
+sys.path.append(str(Path(__file__).parent / "00_download_sec_filings"))
+from run_sec_download import run_sec_download_pipeline
 
 
 # Configure logging
@@ -72,13 +74,7 @@ def download_sec_filings(config: PipelineConfig) -> None:
                 "rate_limit_seconds": config.sec_rate_limit_seconds
             },
             "output_settings": {
-                "text_files_dir": str(config.company_data_dir),
-                "save_html": False,
-                "save_json": False
-            },
-            "analysis_settings": {
-                "generate_analysis": True,
-                "detailed_breakdown": True
+                "markdown_files_dir": str(config.company_data_dir)
             }
         }
         
@@ -91,45 +87,12 @@ def download_sec_filings(config: PipelineConfig) -> None:
         logger.info(f"Created temporary config file: {temp_config_path}")
         logger.info(f"SEC config - Start year: {sec_config['download_settings']['start_year']}, End year: {sec_config['download_settings']['end_year']}")
         
-        # Initialize SEC filings downloader with temporary config
-        downloader = AMDSECFilingsDownloader(config_path=temp_config_path)
+        # Use the new improved downloader
+        total_downloaded = run_sec_download_pipeline(temp_config_path)
         
-        # Debug logging for downloader initialization
-        logger.info(f"Downloader initialized - Start year: {downloader.start_year}, End year: {downloader.end_year}")
-        
-        # Download all filings
-        downloaded_content = downloader.download_all_filings()
-        
-        if downloaded_content:
-            total_downloaded = sum(len(filings) for filings in downloaded_content.values())
+        if total_downloaded > 0:
             logger.info(f"SEC filings download completed successfully")
-            logger.info(f"Downloaded {total_downloaded} filings:")
-            for form_type, filings in downloaded_content.items():
-                logger.info(f"  {form_type}: {len(filings)} filings")
-            
-            # Extract content and convert to text files in the company data directory
-            logger.info("Extracting content and converting to text files...")
-            
-            # Import the required classes using dynamic import
-            sec_module = __import__('00_download_sec_filings.amd_8k_complete_pipeline', fromlist=['SECFilingsContentExtractor', 'TextConverter'])
-            SECFilingsContentExtractor = sec_module.SECFilingsContentExtractor
-            TextConverter = sec_module.TextConverter
-            
-            extractor = SECFilingsContentExtractor()
-            extracted_data = extractor.extract_all_filings(downloaded_content)
-            
-            if extracted_data:
-                converter = TextConverter()
-                converter.load_data(extracted_data)
-                
-                # Convert to text files in the company data directory
-                for filename, content in converter.data.items():
-                    if 'error' not in content:
-                        converter.create_structured_txt_file(filename, content, str(config.company_data_dir))
-                
-                logger.info(f"SEC filings saved to: {config.company_data_dir}")
-            else:
-                logger.warning("No content extracted from SEC filings")
+            logger.info(f"Downloaded {total_downloaded} markdown files to: {config.company_data_dir}")
         else:
             logger.warning("No SEC filings were downloaded")
         
