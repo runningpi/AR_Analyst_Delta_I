@@ -146,8 +146,11 @@ Evidence from Knowledge Base:
                 sentence_type_confidence = float(item.get("sentence_type_confidence", 0.5))
                 evidence = item.get("evidence", [])
                 
+                # Extract evidence content for evaluation
+                evidence_content = self.evidence_formatter.extract_evidence_content(evidence)
+                
                 # Evaluate
-                eval_result = self.evaluate_sentence(sentence, evidence)
+                eval_result = self.evaluate_sentence(sentence, evidence_content)
                 
                 # Create sentence evaluation
                 sentence_eval = SentenceEvaluation(

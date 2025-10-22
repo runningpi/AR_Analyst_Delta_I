@@ -1,175 +1,321 @@
 """
-Matching utilities for querying sentences against the knowledge base.
+Sentence matching utilities for RAG operations.
 
-This module provides utilities for matching analyst report sentences
-against company document knowledge base and retrieving evidence.
+This module provides functionality to match analyst report sentences
+against company documents using the knowledge base.
 """
 
 import logging
-from typing import List, Dict, Any
+from typing import Dict, List, Any, Optional
 from tqdm import tqdm
 
-from .DS_RAG_utils import KnowledgeBaseManager, segments_to_texts
+from .DS_RAG_utils import KnowledgeBaseManager
 
 logger = logging.getLogger(__name__)
 
 
-class SentenceMatcher:
-    """Match sentences against knowledge base to find supporting evidence."""
+class EvidenceFormatter:
+    """
+    Formats evidence for evaluation and display.
     
-    def __init__(self, kb_manager: KnowledgeBaseManager, top_k: int = 5):
+    This class handles:
+    - Evidence text extraction and formatting
+    - Evidence validation
+    - Text preprocessing for evaluation
+    """
+    
+    def __init__(self):
+        """Initialize the evidence formatter."""
+        logger.info("EvidenceFormatter initialized")
+    
+    def has_evidence(self, evidence_texts: List[str]) -> bool:
+        """
+        Check if there is meaningful evidence.
+        
+        Args:
+            evidence_texts: List of evidence text strings
+            
+        Returns:
+            True if there is meaningful evidence
+        """
+        if not evidence_texts:
+            return False
+        
+        # Check if any evidence text is meaningful (not empty, not just whitespace)
+        for text in evidence_texts:
+            if text and text.strip():
+                return True
+        
+        return False
+    
+    def format_evidence(self, evidence_texts: List[str], max_length: int = 2000) -> str:
+        """
+        Format evidence texts for evaluation.
+        
+        Args:
+            evidence_texts: List of evidence text strings
+            max_length: Maximum length of formatted evidence
+            
+        Returns:
+            Formatted evidence string
+        """
+        if not self.has_evidence(evidence_texts):
+            return "No evidence found."
+        
+        # Filter out empty evidence
+        valid_evidence = [text.strip() for text in evidence_texts if text and text.strip()]
+        
+        if not valid_evidence:
+            return "No evidence found."
+        
+        # Combine evidence with separators
+        formatted = "\n\n--- Evidence ---\n".join(valid_evidence)
+        
+        # Truncate if too long
+        if len(formatted) > max_length:
+            formatted = formatted[:max_length] + "... [truncated]"
+        
+        return formatted
+    
+    def extract_evidence_content(self, evidence_list: List[Dict[str, Any]]) -> List[str]:
+        """
+        Extract content from evidence list.
+        
+        Args:
+            evidence_list: List of evidence dictionaries
+            
+        Returns:
+            List of evidence content strings
+        """
+        if not evidence_list:
+            return []
+        
+        content_list = []
+        for evidence in evidence_list:
+            content = evidence.get('content', '')
+            if content and content.strip():
+                content_list.append(content.strip())
+        
+        return content_list
+
+
+class SentenceMatcher:
+    """
+    Matches sentences from analyst reports against company documents.
+    
+    This class handles:
+    - Querying the knowledge base for each sentence
+    - Ranking and filtering results
+    - Formatting evidence for evaluation
+    """
+    
+    def __init__(
+        self,
+        kb_manager: KnowledgeBaseManager,
+        top_k: int = 5
+    ):
         """
         Initialize the sentence matcher.
         
         Args:
             kb_manager: Knowledge base manager instance
-            top_k: Number of top results to retrieve per query
+            top_k: Number of top results to return for each query
         """
         self.kb_manager = kb_manager
         self.top_k = top_k
+        
         logger.info(f"SentenceMatcher initialized with top_k={top_k}")
     
-    def match_sentence(self, sentence: str) -> List[str]:
+    def match_sentence(
+        self,
+        sentence: str,
+        sentence_id: Optional[str] = None
+    ) -> List[Dict[str, Any]]:
         """
         Match a single sentence against the knowledge base.
         
         Args:
-            sentence: Sentence to match
+            sentence: Sentence text to match
+            sentence_id: Optional identifier for the sentence
             
         Returns:
-            List of evidence text strings
+            List of evidence results
         """
-        if not sentence or not sentence.strip():
+        try:
+            # Query the knowledge base
+            results = self.kb_manager.query(sentence, top_k=self.top_k)
+            
+            # Format results as evidence
+            evidence = []
+            for i, result in enumerate(results):
+                evidence_item = {
+                    "rank": i + 1,
+                    "score": float(result.get('score', 0.0)),
+                    "content": result.get('content', ''),
+                    "doc_id": result.get('doc_id', ''),
+                    "chunk_start": result.get('chunk_start', 0),
+                    "chunk_end": result.get('chunk_end', 0),
+                    "metadata": {
+                        "sentence_id": sentence_id,
+                        "query_text": sentence
+                    }
+                }
+                evidence.append(evidence_item)
+            
+            logger.debug(f"Found {len(evidence)} evidence items for sentence")
+            return evidence
+            
+        except Exception as e:
+            logger.error(f"Failed to match sentence: {e}")
             return []
-        
-        results = self.kb_manager.query(sentence, top_k=self.top_k)
-        evidence_texts = segments_to_texts(results)
-        
-        return evidence_texts
     
     def match_classified_sentences(
         self,
-        classified_data: Dict[str, List[Dict[str, str]]],
-        show_progress: bool = True,
+        classified_sentences: Dict[str, List[Dict[str, str]]],
+        show_progress: bool = True
     ) -> Dict[str, List[Dict[str, Any]]]:
         """
         Match all classified sentences against the knowledge base.
         
         Args:
-            classified_data: Dictionary mapping sections to classified sentences
+            classified_sentences: Dictionary mapping sections to classified sentences
             show_progress: Whether to show progress bar
             
         Returns:
-            Dictionary mapping sections to query results with evidence
+            Dictionary mapping sections to query results with evidence in the format:
+            {
+                "ADVANCED MICRO DEVICES INC": [
+                    {
+                        "sentence": "sentence text",
+                        "evidence": [
+                            {
+                                "content": "evidence content",
+                                "score": 0.85,
+                                "doc_id": "document_id",
+                                "rank": 1
+                            }
+                        ]
+                    }
+                ]
+            }
         """
-        logger.info(f"Starting matching for {len(classified_data)} sections")
+        logger.info("Starting sentence matching against knowledge base")
         
         query_results = {}
-        total_sentences = 0
+        total_sentences = sum(len(sentences) for sentences in classified_sentences.values())
         
-        for section_name, items in classified_data.items():
-            query_results[section_name] = []
+        logger.info(f"Processing {total_sentences} sentences across {len(classified_sentences)} sections")
+        
+        # Create progress bar if requested
+        if show_progress:
+            pbar = tqdm(total=total_sentences, desc="Matching sentences")
+        
+        try:
+            for section_name, sentences in classified_sentences.items():
+                logger.info(f"Processing section: {section_name} ({len(sentences)} sentences)")
+                
+                section_results = []
+                
+                for i, sentence_data in enumerate(sentences):
+                    sentence_text = sentence_data.get('sentence', '')
+                    sentence_id = f"{section_name}_{i}"
+                    
+                    # Match sentence against KB
+                    evidence = self.match_sentence(sentence_text, sentence_id)
+                    
+                    # Format evidence for output (top 5 results)
+                    formatted_evidence = self._format_evidence_for_output(evidence, max_evidence=5)
+                    
+                    # Create result in the required format
+                    result = {
+                        "sentence": sentence_text,
+                        "evidence": formatted_evidence
+                    }
+                    
+                    section_results.append(result)
+                    
+                    if show_progress:
+                        pbar.update(1)
+                
+                query_results[section_name] = section_results
+                logger.info(f"Completed section: {section_name}")
             
-            # Setup progress bar
-            iterator = items
             if show_progress:
-                iterator = tqdm(
-                    items,
-                    desc=f"Matching {section_name}",
-                    unit="sent",
-                )
+                pbar.close()
             
-            for item in iterator:
-                sentence = item.get("sentence", "").strip()
-                
-                if not sentence:
-                    continue
-                
-                # Query the knowledge base
-                evidence = self.match_sentence(sentence)
-                
-                # Store results
-                result = {
-                    "sentence": sentence,
-                    "source": item.get("source"),
-                    "evidence": evidence,
-                }
-                
-                query_results[section_name].append(result)
-                total_sentences += 1
+            logger.info("Sentence matching completed successfully")
+            return query_results
             
-            logger.debug(f"Completed matching for section: {section_name}")
-        
-        logger.info(f"Matching complete. Total sentences matched: {total_sentences}")
-        return query_results
+        except Exception as e:
+            logger.error(f"Sentence matching failed: {e}")
+            if show_progress:
+                pbar.close()
+            raise
     
-    def match_sentences_flat(
+    def _format_evidence_for_output(
         self,
-        sentences: List[str],
-        show_progress: bool = True,
+        evidence: List[Dict[str, Any]],
+        max_evidence: int = 5
     ) -> List[Dict[str, Any]]:
         """
-        Match a flat list of sentences.
+        Format evidence for output in the required JSON format.
         
         Args:
-            sentences: List of sentences to match
-            show_progress: Whether to show progress bar
+            evidence: List of evidence items
+            max_evidence: Maximum number of evidence items to include
             
         Returns:
-            List of results with sentence and evidence
+            Formatted evidence list
         """
-        results = []
+        if not evidence:
+            return []
         
-        iterator = sentences
-        if show_progress:
-            iterator = tqdm(sentences, desc="Matching sentences", unit="sent")
+        # Sort by score (descending) and take top results
+        sorted_evidence = sorted(evidence, key=lambda x: x.get('score', 0), reverse=True)
+        top_evidence = sorted_evidence[:max_evidence]
         
-        for sentence in iterator:
-            evidence = self.match_sentence(sentence)
-            results.append({
-                "sentence": sentence,
-                "evidence": evidence,
-            })
+        # Format for output
+        formatted_evidence = []
+        for item in top_evidence:
+            formatted_item = {
+                "content": item.get('content', ''),
+                "score": item.get('score', 0.0),
+                "doc_id": item.get('doc_id', ''),
+                "rank": item.get('rank', 0)
+            }
+            formatted_evidence.append(formatted_item)
         
-        return results
-
-
-class EvidenceFormatter:
-    """Format evidence texts for LLM evaluation."""
+        return formatted_evidence
     
-    @staticmethod
-    def format_evidence(evidence_texts: List[str], max_items: int = 5) -> str:
+    def get_matching_statistics(
+        self,
+        query_results: Dict[str, List[Dict[str, Any]]]
+    ) -> Dict[str, Any]:
         """
-        Format evidence texts into a single string for LLM.
+        Get statistics about the matching results.
         
         Args:
-            evidence_texts: List of evidence text strings
-            max_items: Maximum number of evidence items to include
+            query_results: Results from match_classified_sentences
             
         Returns:
-            Formatted evidence string
+            Dictionary with matching statistics
         """
-        if not evidence_texts:
-            return "No evidence found."
+        total_sentences = sum(len(sentences) for sentences in query_results.values())
+        total_evidence = 0
+        evidence_distribution = {}
         
-        # Limit to max_items
-        evidence_texts = evidence_texts[:max_items]
+        for section_name, sentences in query_results.items():
+            for sentence_data in sentences:
+                evidence_count = len(sentence_data.get('evidence', []))
+                total_evidence += evidence_count
+                evidence_distribution[evidence_count] = evidence_distribution.get(evidence_count, 0) + 1
         
-        # Join with separators
-        formatted = "\n---\n".join(evidence_texts)
+        avg_evidence_per_sentence = total_evidence / total_sentences if total_sentences > 0 else 0
         
-        return formatted
-    
-    @staticmethod
-    def has_evidence(evidence_texts: List[str]) -> bool:
-        """
-        Check if there is any meaningful evidence.
-        
-        Args:
-            evidence_texts: List of evidence text strings
-            
-        Returns:
-            True if evidence exists, False otherwise
-        """
-        return bool(evidence_texts and any(text.strip() for text in evidence_texts))
-
+        return {
+            "total_sentences": total_sentences,
+            "total_sections": len(query_results),
+            "total_evidence": total_evidence,
+            "avg_evidence_per_sentence": avg_evidence_per_sentence,
+            "evidence_distribution": evidence_distribution
+        }

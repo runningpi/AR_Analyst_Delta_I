@@ -91,10 +91,10 @@ class ARAnalysisPipeline:
             use_semantic_sectioning=self.config.use_semantic_sectioning,
         )
         
-        # Add only 10-K and 10-Q company documents (both PDF and TXT files)
-        doc_ids = self.kb_manager.add_10k_10q_documents_from_directory(
+        # Add company documents (both PDF and TXT files)
+        doc_ids = self.kb_manager.add_documents_from_directory(
             directory=self.config.company_data_dir,
-            file_patterns=["*.pdf", "*.txt"],
+            file_pattern="*.txt",  # DS-RAG utils only supports single pattern
         )
         
         logger.info(f"Knowledge base populated with {len(doc_ids)} documents")

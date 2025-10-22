@@ -1,10 +1,14 @@
-"""RAG and Knowledge Base module."""
+"""
+RAG and Knowledge Base module for AR Analyst Delta I pipeline.
 
-from .DS_RAG_utils import KnowledgeBaseManager, segment_to_text, segments_to_texts
+This module handles:
+- Knowledge base creation and management using DS-RAG
+- Sentence matching against company documents
+- Evidence retrieval and ranking
+"""
 
-__all__ = [
-    "KnowledgeBaseManager",
-    "segment_to_text",
-    "segments_to_texts",
-]
+from .DS_RAG_utils import KnowledgeBaseManager
+from .matching_utils import SentenceMatcher
+from .encoding_utils import EncodingUtils
 
+__all__ = ['KnowledgeBaseManager', 'SentenceMatcher', 'EncodingUtils']

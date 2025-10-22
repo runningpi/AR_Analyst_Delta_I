@@ -23,8 +23,8 @@ core_pipeline = __import__('00_core.pipeline', fromlist=['ARAnalysisPipeline'])
 ARAnalysisPipeline = core_pipeline.ARAnalysisPipeline
 
 # Import SEC filings downloader
-sec_downloader = __import__('00_download_sec_filings.sec_filings_downloader', fromlist=['SECFilingsDownloader'])
-SECFilingsDownloader = sec_downloader.SECFilingsDownloader
+sec_downloader = __import__('00_download_sec_filings.amd_8k_complete_pipeline', fromlist=['AMDSECFilingsDownloader'])
+AMDSECFilingsDownloader = sec_downloader.AMDSECFilingsDownloader
 
 
 # Configure logging
@@ -55,24 +55,87 @@ def download_sec_filings(config: PipelineConfig) -> None:
     logger.info("SEC filings download is enabled - starting download...")
     
     try:
-        # Initialize SEC filings downloader
-        downloader = SECFilingsDownloader(
-            user_name="Max Althaus",
-            user_email="max.althaus@example.com",
-            company_cik="0000002488",
-            company_name="AMD",
-            base_output_dir=str(config.company_data_dir)
-        )
+        # Create a temporary config dict from the main settings
+        import json
+        import tempfile
         
-        # Download filings
-        results = downloader.run_complete_pipeline(
-            form_types=["10-K", "10-Q", "8-K"],
-            start_year=2013,
-            end_year=2023
-        )
+        sec_config = {
+            "company": {
+                "cik": config.sec_company_cik,
+                "name": config.sec_company_name,
+                "user_agent": config.sec_user_agent
+            },
+            "download_settings": {
+                "form_types": config.sec_form_types.split(','),
+                "start_year": config.sec_start_year,
+                "end_year": config.sec_end_year,
+                "rate_limit_seconds": config.sec_rate_limit_seconds
+            },
+            "output_settings": {
+                "text_files_dir": str(config.company_data_dir),
+                "save_html": False,
+                "save_json": False
+            },
+            "analysis_settings": {
+                "generate_analysis": True,
+                "detailed_breakdown": True
+            }
+        }
         
-        logger.info("SEC filings download completed successfully")
-        logger.info(f"Downloaded files: {results}")
+        # Create temporary config file
+        with tempfile.NamedTemporaryFile(mode='w', suffix='.json', delete=False) as temp_config:
+            json.dump(sec_config, temp_config, indent=2)
+            temp_config_path = temp_config.name
+        
+        # Debug logging
+        logger.info(f"Created temporary config file: {temp_config_path}")
+        logger.info(f"SEC config - Start year: {sec_config['download_settings']['start_year']}, End year: {sec_config['download_settings']['end_year']}")
+        
+        # Initialize SEC filings downloader with temporary config
+        downloader = AMDSECFilingsDownloader(config_path=temp_config_path)
+        
+        # Debug logging for downloader initialization
+        logger.info(f"Downloader initialized - Start year: {downloader.start_year}, End year: {downloader.end_year}")
+        
+        # Download all filings
+        downloaded_content = downloader.download_all_filings()
+        
+        if downloaded_content:
+            total_downloaded = sum(len(filings) for filings in downloaded_content.values())
+            logger.info(f"SEC filings download completed successfully")
+            logger.info(f"Downloaded {total_downloaded} filings:")
+            for form_type, filings in downloaded_content.items():
+                logger.info(f"  {form_type}: {len(filings)} filings")
+            
+            # Extract content and convert to text files in the company data directory
+            logger.info("Extracting content and converting to text files...")
+            
+            # Import the required classes using dynamic import
+            sec_module = __import__('00_download_sec_filings.amd_8k_complete_pipeline', fromlist=['SECFilingsContentExtractor', 'TextConverter'])
+            SECFilingsContentExtractor = sec_module.SECFilingsContentExtractor
+            TextConverter = sec_module.TextConverter
+            
+            extractor = SECFilingsContentExtractor()
+            extracted_data = extractor.extract_all_filings(downloaded_content)
+            
+            if extracted_data:
+                converter = TextConverter()
+                converter.load_data(extracted_data)
+                
+                # Convert to text files in the company data directory
+                for filename, content in converter.data.items():
+                    if 'error' not in content:
+                        converter.create_structured_txt_file(filename, content, str(config.company_data_dir))
+                
+                logger.info(f"SEC filings saved to: {config.company_data_dir}")
+            else:
+                logger.warning("No content extracted from SEC filings")
+        else:
+            logger.warning("No SEC filings were downloaded")
+        
+        # Clean up temporary config file
+        import os
+        os.unlink(temp_config_path)
         
     except Exception as e:
         logger.error(f"SEC filings download failed: {e}")
