@@ -115,7 +115,7 @@ class KnowledgeBaseManager:
         for file_path in files:
             try:
                 # Read file content
-                if file_path.suffix.lower() == '.txt':
+                if file_path.suffix.lower() in ['.txt', '.md']:
                     text = file_path.read_text(encoding='utf-8', errors='replace')
                 else:
                     logger.warning(f"Unsupported file type: {file_path.suffix}")

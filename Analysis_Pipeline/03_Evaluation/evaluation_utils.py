@@ -152,6 +152,15 @@ Evidence from Knowledge Base:
                 # Evaluate
                 eval_result = self.evaluate_sentence(sentence, evidence_content)
                 
+                # Extract evidence content strings for SentenceEvaluation model
+                evidence_strings = []
+                if evidence:
+                    for ev in evidence:
+                        if isinstance(ev, dict) and 'content' in ev:
+                            evidence_strings.append(ev['content'])
+                        elif isinstance(ev, str):
+                            evidence_strings.append(ev)
+                
                 # Create sentence evaluation
                 sentence_eval = SentenceEvaluation(
                     sentence=sentence,
@@ -160,7 +169,7 @@ Evidence from Knowledge Base:
                     sentence_type=sentence_type,
                     source_confidence=source_confidence,
                     sentence_type_confidence=sentence_type_confidence,
-                    evidence=evidence,
+                    evidence=evidence_strings,
                     evaluation=eval_result.evaluation,
                     reason=eval_result.reason,
                 )

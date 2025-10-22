@@ -42,13 +42,15 @@ class PipelineConfig:
     
     # SEC Filings Download Configuration
     download_sec_filings: bool = False
+    # Fixed SEC configuration values
     sec_company_cik: str = "0000002488"
     sec_company_name: str = "AMD"
     sec_user_agent: str = "AMD Research Tool (research@example.com)"
+    sec_rate_limit_seconds: float = 0.1
+    # Configurable SEC settings
     sec_form_types: str = "8-K,10-Q,10-K"
     sec_start_year: int = 2023
     sec_end_year: int = 2024
-    sec_rate_limit_seconds: float = 0.1
     
     
     @classmethod
@@ -105,13 +107,15 @@ class PipelineConfig:
         download_sec_filings = config_dict.get('download_sec_filings', 'false').lower() == 'true'
         
         # Parse SEC configuration settings
-        sec_company_cik = config_dict.get('sec_company_cik', '0000002488')
-        sec_company_name = config_dict.get('sec_company_name', 'AMD')
-        sec_user_agent = config_dict.get('sec_user_agent', 'AMD Research Tool (research@example.com)')
+        # Fixed values (no longer configurable)
+        sec_company_cik = "0000002488"
+        sec_company_name = "AMD"
+        sec_user_agent = "AMD Research Tool (research@example.com)"
+        sec_rate_limit_seconds = 0.1
+        # Configurable values
         sec_form_types = config_dict.get('sec_form_types', '8-K,10-Q,10-K')
         sec_start_year = int(config_dict.get('sec_start_year', '2023'))
         sec_end_year = int(config_dict.get('sec_end_year', '2024'))
-        sec_rate_limit_seconds = float(config_dict.get('sec_rate_limit_seconds', '0.1'))
         
         # Setup directory paths
         # All outputs now go to stage-specific subdirectories

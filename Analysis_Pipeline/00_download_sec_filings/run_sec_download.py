@@ -42,15 +42,19 @@ def run_sec_download_pipeline(config_path: str = "config.json") -> int:
         # Load configuration
         config = load_config(config_path)
         
-        # Extract settings
-        cik = config['company']['cik']
-        forms = config['download_settings']['form_types']
-        start_year = config['download_settings']['start_year']
-        end_year = config['download_settings']['end_year']
-        rate_limit = config['download_settings']['rate_limit_seconds']
+        # Extract settings - using fixed values for company info
+        cik = "0000002488"  # Fixed AMD CIK
+        company_name = "AMD"  # Fixed company name
+        user_agent = "AMD Research Tool (research@example.com)"  # Fixed user agent
+        rate_limit = 0.1  # Fixed rate limit
+        
+        # Get configurable settings from config or use defaults
+        forms = config.get('download_settings', {}).get('form_types', ["10-Q", "10-K"])
+        start_year = config.get('download_settings', {}).get('start_year', 2023)
+        end_year = config.get('download_settings', {}).get('end_year', 2024)
         output_dir = config['output_settings']['markdown_files_dir']
         
-        logger.info(f"Starting SEC download for {config['company']['name']} (CIK: {cik})")
+        logger.info(f"Starting SEC download for {company_name} (CIK: {cik})")
         logger.info(f"Form types: {', '.join(forms)}")
         logger.info(f"Date range: {start_year}-{end_year}")
         logger.info(f"Output directory: {output_dir}")

@@ -62,16 +62,10 @@ def download_sec_filings(config: PipelineConfig) -> None:
         import tempfile
         
         sec_config = {
-            "company": {
-                "cik": config.sec_company_cik,
-                "name": config.sec_company_name,
-                "user_agent": config.sec_user_agent
-            },
             "download_settings": {
                 "form_types": config.sec_form_types.split(','),
                 "start_year": config.sec_start_year,
-                "end_year": config.sec_end_year,
-                "rate_limit_seconds": config.sec_rate_limit_seconds
+                "end_year": config.sec_end_year
             },
             "output_settings": {
                 "markdown_files_dir": str(config.company_data_dir)
