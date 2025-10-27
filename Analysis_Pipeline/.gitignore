@@ -44,10 +44,10 @@ pipeline.log
 logging/
 
 # Old general output directory (deprecated - using subdirectories now)
-output/
+#output/
 
 # Output files
-*.json
+# *.json
 !settings.json
 !package.json
 

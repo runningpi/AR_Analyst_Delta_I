@@ -1,0 +1,44 @@
+{
+  "total_sentences": 151,
+  "by_evaluation": {
+    "No Evidence": 97,
+    "Supported": 30,
+    "Partially Supported": 21,
+    "Contradicted": 2,
+    "Not Supported": 1
+  },
+  "by_source": {
+    "corporate_information": 75,
+    "other": 29,
+    "analyst_interpretation": 29,
+    "market_information": 18
+  },
+  "by_section": {
+    "Argus Research Disclaimer": 21,
+    "Analyst's Notes\\_Continued": 17,
+    "FINANCIAL STRENGTH & DIVIDEND": 14,
+    "Analyst's Notes. Continued": 13,
+    "INVESTMENT THESIS": 9,
+    "Financial & Risk Analysis": 9,
+    "About Argus": 8,
+    "EARNINGS & GROWTH ANALYSIS": 6,
+    "Peer & Industry Analysis": 6,
+    "ARGUS RATING: BUY": 6,
+    "VALUATION": 6,
+    "THE ARGUS RESEARCH RATING SYSTEM": 5,
+    "RECENT DEVELOPMENTS": 5,
+    "Argus Recommendations": 5,
+    "ADVANCED MICRO DEVICES INC": 4,
+    "MANAGEMENT & RISKS": 4,
+    "COMPANY DESCRIPTION": 2,
+    "Statistics Key": 2,
+    "Morningstar Disclaimer": 2,
+    "Financial Strength": 1,
+    "Market Overview": 1,
+    "Analyst's Notes": 1,
+    "Introduction": 1,
+    "Sector Overview": 1,
+    "Forecasted Growth": 1,
+    "Valuation": 1
+  }
+}
