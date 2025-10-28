@@ -17,8 +17,8 @@ from typing import Dict, List, Any, Optional
 from config import PipelineConfig
 
 # Import using dynamic imports to handle numbered folder names
-decomp_ocr = __import__('01_Decomposition_AR.ocr_docling_utils', fromlist=['DoclingParser'])
-DoclingParser = decomp_ocr.DoclingParser
+decomp_ocr = __import__('01_Decomposition_AR.ocr_huggingface_utils', fromlist=['HuggingFaceDeepseekOCRParser'])
+HuggingFaceDeepseekOCRParser = decomp_ocr.HuggingFaceDeepseekOCRParser
 
 decomp_class = __import__('01_Decomposition_AR.classification_service', fromlist=['ClassificationService'])
 ClassificationService = decomp_class.ClassificationService
@@ -50,7 +50,7 @@ class ARAnalysisPipeline:
         self.config = config
         
         # Initialize components
-        self.docling_parser = DoclingParser()
+        self.hf_ocr_parser = HuggingFaceDeepseekOCRParser()
         self.classification_service = None
         self.kb_manager = None
         self.sentence_matcher = None
@@ -137,7 +137,7 @@ class ARAnalysisPipeline:
         """
         logger.info("Extracting and parsing text into sentences")
         
-        sections = self.docling_parser.parse_sections_from_text(text_dict)
+        sections = self.hf_ocr_parser.parse_sections_from_text(text_dict)
         
         # Note: Extracted sections are saved to Decomposition_AR/ocr_content/[PDF_NAME]/
         # when using PDF extraction. No separate save needed here for text_dict input.
@@ -533,7 +533,7 @@ class ARAnalysisPipeline:
             text_dict: Optional dictionary mapping section names to section text.
                       If None and extract_from_pdf=True, will extract from PDF in config.
             kb_id: Knowledge base identifier
-            extract_from_pdf: If True, extract text from PDF using Docling
+            extract_from_pdf: If True, extract text from PDF using Hugging Face Deepseek OCR
             
         Returns:
             EvaluationAnalyzer with results
@@ -550,7 +550,7 @@ class ARAnalysisPipeline:
                 # Use provided text dictionary
                 sections = self.extract_and_parse_text(text_dict)
             elif extract_from_pdf:
-                # Extract directly from PDF using Docling
+                # Extract directly from PDF using Hugging Face Deepseek OCR
                 logger.info(f"Extracting text from PDF: {self.config.analyst_report_path}")
                 
                 # Define OCR output directory
@@ -558,7 +558,7 @@ class ARAnalysisPipeline:
                 # Note: pipeline.py is now in 00_core/, so go up one level to reach 01_Decomposition_AR
                 ocr_output_dir = Path(__file__).parent.parent / "01_Decomposition_AR" / "ocr_content"
                 
-                sections = self.docling_parser.parse_pdf_to_sections(
+                sections = self.hf_ocr_parser.parse_pdf_to_sections(
                     self.config.analyst_report_path,
                     save_ocr_output=True,
                     ocr_output_base_dir=ocr_output_dir,

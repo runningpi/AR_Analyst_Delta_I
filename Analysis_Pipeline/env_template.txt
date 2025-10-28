@@ -6,3 +6,6 @@ OPENAI_API_KEY=your_openai_api_key_here
 # Cohere API Key (optional, for reranking)
 CO_API_KEY=your_cohere_api_key_here
 
+# Hugging Face API Token (required for Deepseek OCR via Hugging Face)
+HUGGINGFACE_API_TOKEN=your_huggingface_api_token_here
+

@@ -19,8 +19,11 @@ cohere>=4.0.0
 pandas>=2.0.0
 numpy>=1.20.0,<2.0.0
 
-# Document processing (Docling OCR)
-docling>=1.0.0
+# HTTP requests for Hugging Face API
+requests>=2.25.0
+
+# PDF processing for OCR
+PyMuPDF>=1.23.0
 
 # Utils
 tqdm>=4.65.0
