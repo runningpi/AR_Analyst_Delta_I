@@ -169,16 +169,16 @@ class SentenceMatcher:
             logger.error(f"Failed to match sentence: {e}")
             return []
     
-    def match_classified_sentences(
+    def match_classified_snippets(
         self,
-        classified_sentences: Dict[str, List[Dict[str, str]]],
+        classified_snippets: Dict[str, List[Dict[str, str]]],
         show_progress: bool = True
     ) -> Dict[str, List[Dict[str, Any]]]:
         """
-        Match all classified sentences against the knowledge base.
+        Match all classified snippets against the knowledge base.
         
         Args:
-            classified_sentences: Dictionary mapping sections to classified sentences
+            classified_snippets: Dictionary mapping sections to classified snippets
             show_progress: Whether to show progress bar
             
         Returns:
@@ -186,7 +186,11 @@ class SentenceMatcher:
             {
                 "ADVANCED MICRO DEVICES INC": [
                     {
-                        "sentence": "sentence text",
+                        "snippet": "snippet text",
+                        "source": "primary",
+                        "sentence_type": "qualitative",
+                        "source_confidence": 0.9,
+                        "sentence_type_confidence": 0.8,
                         "evidence": [
                             {
                                 "content": "evidence content",
@@ -199,36 +203,40 @@ class SentenceMatcher:
                 ]
             }
         """
-        logger.info("Starting sentence matching against knowledge base")
+        logger.info("Starting snippet matching against knowledge base")
         
         query_results = {}
-        total_sentences = sum(len(sentences) for sentences in classified_sentences.values())
+        total_snippets = sum(len(snippets) for snippets in classified_snippets.values())
         
-        logger.info(f"Processing {total_sentences} sentences across {len(classified_sentences)} sections")
+        logger.info(f"Processing {total_snippets} snippets across {len(classified_snippets)} sections")
         
         # Create progress bar if requested
         if show_progress:
-            pbar = tqdm(total=total_sentences, desc="Matching sentences")
+            pbar = tqdm(total=total_snippets, desc="Matching snippets")
         
         try:
-            for section_name, sentences in classified_sentences.items():
-                logger.info(f"Processing section: {section_name} ({len(sentences)} sentences)")
+            for section_name, snippets in classified_snippets.items():
+                logger.info(f"Processing section: {section_name} ({len(snippets)} snippets)")
                 
                 section_results = []
                 
-                for i, sentence_data in enumerate(sentences):
-                    sentence_text = sentence_data.get('sentence', '')
-                    sentence_id = f"{section_name}_{i}"
+                for i, snippet_data in enumerate(snippets):
+                    snippet_text = snippet_data.get('snippet', '')
+                    snippet_id = f"{section_name}_{i}"
                     
-                    # Match sentence against KB
-                    evidence = self.match_sentence(sentence_text, sentence_id)
+                    # Match snippet against KB
+                    evidence = self.match_sentence(snippet_text, snippet_id)
                     
                     # Format evidence for output (top 5 results)
                     formatted_evidence = self._format_evidence_for_output(evidence, max_evidence=5)
                     
-                    # Create result in the required format
+                    # Create result in the required format, preserving all classification data
                     result = {
-                        "sentence": sentence_text,
+                        "snippet": snippet_text,
+                        "source": snippet_data.get('source', 'unknown'),
+                        "sentence_type": snippet_data.get('sentence_type', 'qualitative'),
+                        "source_confidence": snippet_data.get('source_confidence', 0.5),
+                        "sentence_type_confidence": snippet_data.get('sentence_type_confidence', 0.5),
                         "evidence": formatted_evidence
                     }
                     
@@ -243,11 +251,11 @@ class SentenceMatcher:
             if show_progress:
                 pbar.close()
             
-            logger.info("Sentence matching completed successfully")
+            logger.info("Snippet matching completed successfully")
             return query_results
             
         except Exception as e:
-            logger.error(f"Sentence matching failed: {e}")
+            logger.error(f"Snippet matching failed: {e}")
             if show_progress:
                 pbar.close()
             raise

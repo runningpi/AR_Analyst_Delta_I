@@ -20,11 +20,6 @@ from config import PipelineConfig
 decomp_ocr = __import__('01_Decomposition_AR.ocr_docling_utils', fromlist=['DoclingParser'])
 DoclingParser = decomp_ocr.DoclingParser
 
-decomp_text = __import__('01_Decomposition_AR.text_mangement_utils', fromlist=['TextManager', 'ClassificationManager', 'EvaluationManager'])
-TextManager = decomp_text.TextManager
-ClassificationManager = decomp_text.ClassificationManager
-EvaluationManager = decomp_text.EvaluationManager
-
 decomp_class = __import__('01_Decomposition_AR.classification_service', fromlist=['ClassificationService'])
 ClassificationService = decomp_class.ClassificationService
 
@@ -56,7 +51,6 @@ class ARAnalysisPipeline:
         
         # Initialize components
         self.docling_parser = DoclingParser()
-        self.text_manager = TextManager()
         self.classification_service = None
         self.kb_manager = None
         self.sentence_matcher = None
@@ -94,17 +88,17 @@ class ARAnalysisPipeline:
         # Add company documents (both TXT and MD files)
         doc_ids = []
         
-        # Add .txt files
-        txt_docs = self.kb_manager.add_documents_from_directory(
-            directory=self.config.company_data_dir,
-            file_pattern="*.txt",
-        )
-        doc_ids.extend(txt_docs)
+        # # Add .txt files
+        # txt_docs = self.kb_manager.add_documents_from_directory(
+        #     directory=self.config.company_data_dir,
+        #     file_pattern="*.txt",
+        # )
+        # doc_ids.extend(txt_docs)
         
         # Add .md files (company reports)
         md_docs = self.kb_manager.add_documents_from_directory(
             directory=self.config.company_data_dir,
-            file_pattern="*.md",
+            file_pattern="*.pdf",
         )
         doc_ids.extend(md_docs)
         
@@ -150,85 +144,85 @@ class ARAnalysisPipeline:
         
         return sections
     
-    def classify_sentences(
+    def extract_snippets_from_sentences(
         self,
         sections: Dict[str, List[str]],
         pdf_name: str = None,
         use_cached: bool = True
     ) -> Dict[str, List[Dict[str, str]]]:
         """
-        Classify all sentences in sections.
+        Extract knowledge snippets from all sentences in sections.
         
         Args:
             sections: Dictionary mapping section names to sentence lists
             pdf_name: Name of the PDF (for caching), defaults to analyst report name
-            use_cached: Whether to use cached classification if available
+            use_cached: Whether to use cached snippet extraction if available
             
         Returns:
-            Dictionary mapping section names to lists of classified sentence dicts
+            Dictionary mapping section names to lists of classified snippet dicts
         """
         import json
         from datetime import datetime
         from pathlib import Path
         
-        logger.info("Classifying sentences")
+        logger.info("Extracting knowledge snippets from sentences")
         
         # Determine PDF name for caching
         if pdf_name is None:
             pdf_name = self.config.analyst_report_path.stem
         
-        # Setup classification cache directory
-        classification_cache_dir = Path(__file__).parent.parent / "01_Decomposition_AR" / "output" / "classified_sentences"
-        doc_cache_dir = classification_cache_dir / pdf_name
-        cache_file = doc_cache_dir / "classified_sentences.json"
+        # Setup snippet cache directory
+        snippet_cache_dir = Path(__file__).parent.parent / "01_Decomposition_AR" / "output" / "classified_snippets"
+        doc_cache_dir = snippet_cache_dir / pdf_name
+        cache_file = doc_cache_dir / "classified_snippets.json"
         
-        # Check if cached classification exists
+        # Check if cached snippet extraction exists
         if use_cached and cache_file.exists():
-            logger.info(f"✓ Found cached classified sentences at: {cache_file}")
-            logger.info("Loading classifications from cache (skipping classification)...")
+            logger.info(f"✓ Found cached classified snippets at: {cache_file}")
+            logger.info("Loading snippets from cache (skipping snippet extraction)...")
             
             try:
                 with open(cache_file, 'r', encoding='utf-8') as f:
-                    classified = json.load(f)
+                    snippets = json.load(f)
                 
-                total_sentences = sum(len(items) for items in classified.values())
-                logger.info(f"✓ Loaded classifications for {total_sentences} sentences from cache")
+                total_snippets = sum(len(items) for items in snippets.values())
+                logger.info(f"✓ Loaded snippets for {total_snippets} snippets from cache")
                 
                 # Load and display metadata if available
                 metadata_path = doc_cache_dir / "metadata.json"
                 if metadata_path.exists():
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
-                    logger.info(f"  Originally classified: {metadata.get('classified_at', 'unknown')}")
+                    logger.info(f"  Originally extracted: {metadata.get('extracted_at', 'unknown')}")
                 
-                return classified
+                return snippets
                 
             except Exception as e:
-                logger.warning(f"Failed to load cached classifications: {e}")
-                logger.info("Falling back to fresh classification...")
+                logger.warning(f"Failed to load cached snippets: {e}")
+                logger.info("Falling back to fresh snippet extraction...")
         
-        # No cached output or use_cached=False: proceed with fresh classification
+        # No cached output or use_cached=False: proceed with fresh snippet extraction
         if use_cached:
-            logger.info("No cached classifications found. Running classification...")
+            logger.info("No cached snippets found. Running snippet extraction...")
         else:
-            logger.info("Cached classifications disabled. Running classification...")
+            logger.info("Cached snippets disabled. Running snippet extraction...")
         
         if not self.classification_service:
             self.setup_classification_service()
         
-        classified = self.classification_service.classify_sentences(sections)
+        snippets = self.classification_service.extract_snippets_from_sentences(sections)
         
         # Save to cache directory
         doc_cache_dir.mkdir(parents=True, exist_ok=True)
         
         with open(cache_file, 'w', encoding='utf-8') as f:
-            json.dump(classified, f, ensure_ascii=False, indent=2)
-        logger.info(f"Saved classified sentences to cache: {cache_file}")
+            json.dump(snippets, f, ensure_ascii=False, indent=2)
+        logger.info(f"Saved classified snippets to cache: {cache_file}")
         
         # Save metadata
-        total_sentences = sum(len(items) for items in classified.values())
+        total_snippets = sum(len(items) for items in snippets.values())
         source_counts = {}
-        for items in classified.values():
+        for items in snippets.values():
             for item in items:
                 source = item.get('source', 'unknown')
                 source_counts[source] = source_counts.get(source, 0) + 1
@@ -236,9 +230,9 @@ class ARAnalysisPipeline:
         metadata = {
             "pdf_file": str(self.config.analyst_report_path),
             "pdf_filename": self.config.analyst_report_path.name,
-            "classified_at": datetime.now().isoformat(),
-            "total_sections": len(classified),
-            "total_sentences": total_sentences,
+            "extracted_at": datetime.now().isoformat(),
+            "total_sections": len(snippets),
+            "total_snippets": total_snippets,
             "source_distribution": source_counts,
             "model_used": self.config.classification_model,
             "batch_size": self.config.classification_batch_size
@@ -247,21 +241,21 @@ class ARAnalysisPipeline:
         metadata_path = doc_cache_dir / "metadata.json"
         with open(metadata_path, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, ensure_ascii=False, indent=2)
-        logger.info(f"Saved classification metadata: {metadata_path}")
+        logger.info(f"Saved snippet extraction metadata: {metadata_path}")
         
-        return classified
+        return snippets
     
-    def match_sentences(
+    def match_snippets(
         self,
-        classified_sentences: Dict[str, List[Dict[str, str]]],
+        classified_snippets: Dict[str, List[Dict[str, str]]],
         pdf_name: str = None,
         use_cached: bool = True
     ) -> Dict[str, List[Dict[str, Any]]]:
         """
-        Match sentences against knowledge base.
+        Match snippets against knowledge base.
         
         Args:
-            classified_sentences: Dictionary of classified sentences
+            classified_snippets: Dictionary of classified snippets
             pdf_name: Name of the PDF being processed (for caching)
             use_cached: Whether to use cached query results if available
             
@@ -271,7 +265,7 @@ class ARAnalysisPipeline:
         import json
         from datetime import datetime
         
-        logger.info("Matching sentences against knowledge base")
+        logger.info("Matching snippets against knowledge base")
         
         # Determine PDF name
         if pdf_name is None:
@@ -291,8 +285,8 @@ class ARAnalysisPipeline:
                 with open(cache_file, 'r', encoding='utf-8') as f:
                     query_results = json.load(f)
                 
-                total_sentences = sum(len(items) for items in query_results.values())
-                logger.info(f"✓ Loaded query results for {total_sentences} sentences from cache")
+                total_snippets = sum(len(items) for items in query_results.values())
+                logger.info(f"✓ Loaded query results for {total_snippets} snippets from cache")
                 
                 metadata_path = doc_cache_dir / "metadata.json"
                 if metadata_path.exists():
@@ -316,8 +310,8 @@ class ARAnalysisPipeline:
             self.setup_matching_service()
         
         # Perform matching
-        query_results = self.sentence_matcher.match_classified_sentences(
-            classified_sentences,
+        query_results = self.sentence_matcher.match_classified_snippets(
+            classified_snippets,
             show_progress=True,
         )
         
@@ -575,19 +569,19 @@ class ARAnalysisPipeline:
                     "Either text_dict must be provided or extract_from_pdf must be True"
                 )
             
-            # Step 2: Classify sentences
-            logger.info("STEP 2: Classify sentences")
+            # Step 2: Extract knowledge snippets
+            logger.info("STEP 2: Extract knowledge snippets from sentences")
             pdf_name = self.config.analyst_report_path.stem
-            classified = self.classify_sentences(sections, pdf_name=pdf_name, use_cached=True)
+            snippets = self.extract_snippets_from_sentences(sections, pdf_name=pdf_name, use_cached=True)
             
             # Step 3: Setup knowledge base
             logger.info("STEP 3: Setup knowledge base")
             self.setup_knowledge_base(kb_id)
             self.setup_matching_service()
             
-            # Step 4: Match sentences
-            logger.info("STEP 4: Match sentences against KB")
-            query_results = self.match_sentences(classified, pdf_name=pdf_name, use_cached=True)
+            # Step 4: Match snippets
+            logger.info("STEP 4: Match snippets against KB")
+            query_results = self.match_snippets(snippets, pdf_name=pdf_name, use_cached=True)
             
             # Step 5: Evaluate sentences
             logger.info("STEP 5: Evaluate sentences with LLM")

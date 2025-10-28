@@ -63,7 +63,7 @@ def download_sec_filings(config: PipelineConfig) -> None:
         
         sec_config = {
             "download_settings": {
-                "form_types": config.sec_form_types.split(','),
+                "form_types": [form_type.strip() for form_type in config.sec_form_types.split(',')],
                 "start_year": config.sec_start_year,
                 "end_year": config.sec_end_year
             },
@@ -160,13 +160,13 @@ def main(
                         text_manager = TextManager()
                         sections = text_manager.load_sections_from_json(extracted_path)
                         
-                        # Continue from classification
+                        # Continue from snippet extraction
                         pdf_name = config.analyst_report_path.stem
-                        classified = pipeline.classify_sentences(sections, pdf_name=pdf_name, use_cached=True)
+                        snippets = pipeline.extract_snippets_from_sentences(sections, pdf_name=pdf_name, use_cached=True)
                         kb_id = "analyst_report_kb"
                         pipeline.setup_knowledge_base(kb_id)
                         pipeline.setup_matching_service()
-                        query_results = pipeline.match_sentences(classified, pdf_name=pdf_name, use_cached=True)
+                        query_results = pipeline.match_snippets(snippets, pdf_name=pdf_name, use_cached=True)
                         evaluations = pipeline.evaluate_sentences(query_results, pdf_name=pdf_name, use_cached=True)
                         analyzer = pipeline.analyze_and_report(evaluations, pdf_name=pdf_name)
                     else:

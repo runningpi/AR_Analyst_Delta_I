@@ -113,7 +113,7 @@ class PipelineConfig:
         sec_user_agent = "AMD Research Tool (research@example.com)"
         sec_rate_limit_seconds = 0.1
         # Configurable values
-        sec_form_types = config_dict.get('sec_form_types', '8-K,10-Q,10-K')
+        sec_form_types = config_dict.get('sec_form_types', '8-K,10-Q,10-K').strip()
         sec_start_year = int(config_dict.get('sec_start_year', '2023'))
         sec_end_year = int(config_dict.get('sec_end_year', '2024'))
         

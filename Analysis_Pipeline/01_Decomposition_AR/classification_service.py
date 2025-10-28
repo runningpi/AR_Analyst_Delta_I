@@ -34,10 +34,20 @@ logger = logging.getLogger(__name__)
 class ClassificationService:
     """Service for classifying sentences using GPT."""
     
-    SYSTEM_PROMPT = """Classify each of the following sentences into TWO categories:
+    SYSTEM_PROMPT = """Extract knowledge snippets from the following sentences and classify each snippet.
+
+For each sentence, break it down into individual knowledge snippets (atomic pieces of information) and classify each snippet.
+
+Example:
+Input: "Das Unternehmen verkauft Graphikkarten und hat im letzten Jahr den Verkauf der Karten um 50% gesteigert"
+Output snippets:
+- "AMD verkauft Graphikkarten"
+- "Der Verkauf der Graphikkarten von AMD wurde von 2023 auf 2024 um 50% gesteigert"
+
+For each snippet, classify into TWO categories:
 
 1. SOURCE TYPE (choose exactly one):
-   - primary: Derived from company disclosures (official data, management quotes, Current stock market price and market value of the company)
+   - primary: Derived from company disclosures (official data, management quotes, current stock market price and market value of the company)
    - secondary: Derived from market trends, third-party data, or inference  
    - tertiary_interpretive: Analyst reasoning, synthesis, or speculation
    - other: Everything which is not part of the other categories
@@ -46,7 +56,7 @@ class ClassificationService:
    - quantitative: Includes numbers, percentages, growth rates, EPS, margins, or price targets
    - qualitative: Descriptive statements, management assessments, strategic opinions
 
-For each classification, also provide a confidence score from 0.0 to 1.0, where:
+For each snippet classification, also provide a confidence score from 0.0 to 1.0, where:
 - 1.0 = Very confident (clear, unambiguous classification)
 - 0.8-0.9 = Confident (mostly clear with minor ambiguity)
 - 0.6-0.7 = Somewhat confident (some ambiguity but leaning toward classification)
@@ -54,9 +64,9 @@ For each classification, also provide a confidence score from 0.0 to 1.0, where:
 - 0.0-0.3 = Very uncertain (highly ambiguous)
 
 Return only valid JSON in the format:
-{ "results": [ {"source":"primary", "sentence_type":"quantitative", "source_confidence":0.9, "sentence_type_confidence":0.8}, {"source":"secondary", "sentence_type":"qualitative", "source_confidence":0.7, "sentence_type_confidence":0.9}, ... ] }
+{ "snippets": [ {"snippet":"AMD verkauft Graphikkarten", "source":"primary", "sentence_type":"qualitative", "source_confidence":0.9, "sentence_type_confidence":0.8}, {"snippet":"Der Verkauf der Graphikkarten von AMD wurde von 2023 auf 2024 um 50% gesteigert", "source":"primary", "sentence_type":"quantitative", "source_confidence":0.9, "sentence_type_confidence":0.9}, ... ] }
 
-Do not rewrite or repeat the sentences. Only return the labels and confidence scores.
+Extract all meaningful knowledge snippets from each sentence. Each snippet should be a complete, standalone piece of information.
 """
     
     def __init__(self, model: str = "gpt-4o-mini", batch_size: int = 10):
@@ -118,15 +128,15 @@ Do not rewrite or repeat the sentences. Only return the labels and confidence sc
         
         return json.loads(text)
     
-    def classify_batch(self, sentences: List[str]) -> List[Dict[str, Any]]:
+    def extract_snippets_batch(self, sentences: List[str]) -> List[Dict[str, Any]]:
         """
-        Classify a batch of sentences.
+        Extract knowledge snippets from a batch of sentences and classify each snippet.
         
         Args:
-            sentences: List of sentences to classify
+            sentences: List of sentences to extract snippets from
             
         Returns:
-            List of classification dictionaries with 'source', 'sentence_type', and confidence scores
+            List of snippet dictionaries with 'snippet', 'source', 'sentence_type', and confidence scores
         """
         user_prompt = f"Sentences:\n{json.dumps(sentences, ensure_ascii=False)}"
         
@@ -141,9 +151,10 @@ Do not rewrite or repeat the sentences. Only return the labels and confidence sc
             
             raw_response = response.choices[0].message.content.strip()
             parsed = self._extract_json(raw_response)
-            predictions = []
-            for item in parsed.get("results", []):
-                predictions.append({
+            snippets = []
+            for item in parsed.get("snippets", []):
+                snippets.append({
+                    "snippet": item.get("snippet", ""),
                     "source": item.get("source", "tertiary_interpretive"),
                     "sentence_type": item.get("sentence_type", "qualitative"),
                     "source_confidence": float(item.get("source_confidence", 0.5)),
@@ -151,61 +162,56 @@ Do not rewrite or repeat the sentences. Only return the labels and confidence sc
                 })
             
         except Exception as e:
-            logger.warning(f"Classification failed: {e}. Defaulting to 'tertiary_interpretive'/'qualitative' with low confidence")
-            predictions = []
+            logger.warning(f"Snippet extraction failed: {e}. Returning empty snippets list")
+            snippets = []
         
-        # Ensure we have one label per sentence
-        if len(predictions) < len(sentences):
-            predictions += [{"source": "tertiary_interpretive", "sentence_type": "qualitative", "source_confidence": 0.3, "sentence_type_confidence": 0.3}] * (len(sentences) - len(predictions))
-        elif len(predictions) > len(sentences):
-            predictions = predictions[:len(sentences)]
-        
-        return predictions
+        return snippets
     
-    def classify_sentences(
+    def extract_snippets_from_sentences(
         self,
         sentences_by_section: Dict[str, List[str]]
     ) -> Dict[str, List[Dict[str, str]]]:
         """
-        Classify all sentences in sections.
+        Extract knowledge snippets from all sentences in sections and classify each snippet.
         
         Args:
             sentences_by_section: Dictionary mapping section names to sentence lists
             
         Returns:
-            Dictionary mapping section names to lists of classified sentence dicts
+            Dictionary mapping section names to lists of classified snippet dicts
         """
-        logger.info(f"Starting classification for {len(sentences_by_section)} sections")
+        logger.info(f"Starting snippet extraction for {len(sentences_by_section)} sections")
         
-        classified = {}
-        total_sentences = 0
+        snippets_by_section = {}
+        total_snippets = 0
         
         for section_name, sentences in sentences_by_section.items():
             # Filter out empty sentences
             sentences = [s.strip() for s in sentences if s and s.strip()]
-            classified[section_name] = []
+            snippets_by_section[section_name] = []
             
-            logger.info(f"Classifying {len(sentences)} sentences in section: {section_name}")
+            logger.info(f"Extracting snippets from {len(sentences)} sentences in section: {section_name}")
             
             # Process in batches
             for batch in self._batched(sentences, self.batch_size):
-                classifications = self.classify_batch(batch)
+                snippets = self.extract_snippets_batch(batch)
                 
-                # Pair each sentence with its classification
-                for sentence, classification in zip(batch, classifications):
-                    classified[section_name].append({
-                        "sentence": sentence,
-                        "source": classification["source"],
-                        "sentence_type": classification["sentence_type"],
-                        "source_confidence": classification["source_confidence"],
-                        "sentence_type_confidence": classification["sentence_type_confidence"],
-                    })
-                    total_sentences += 1
+                # Add all snippets from this batch
+                for snippet_data in snippets:
+                    if snippet_data.get("snippet", "").strip():  # Only add non-empty snippets
+                        snippets_by_section[section_name].append({
+                            "snippet": snippet_data["snippet"],
+                            "source": snippet_data["source"],
+                            "sentence_type": snippet_data["sentence_type"],
+                            "source_confidence": snippet_data["source_confidence"],
+                            "sentence_type_confidence": snippet_data["sentence_type_confidence"],
+                        })
+                        total_snippets += 1
             
-            logger.debug(f"Completed classification for section: {section_name}")
+            logger.debug(f"Completed snippet extraction for section: {section_name}")
         
-        logger.info(f"Classification complete. Total sentences classified: {total_sentences}")
-        return classified
+        logger.info(f"Snippet extraction complete. Total snippets extracted: {total_snippets}")
+        return snippets_by_section
     
     def classify_to_models(
         self,

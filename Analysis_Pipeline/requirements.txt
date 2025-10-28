@@ -17,7 +17,7 @@ cohere>=4.0.0
 
 # Data processing
 pandas>=2.0.0
-numpy>=1.20.0
+numpy>=1.20.0,<2.0.0
 
 # Document processing (Docling OCR)
 docling>=1.0.0
