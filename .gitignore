@@ -161,7 +161,6 @@ config.json
 api_keys.txt
 
 # Output directories
-output/
 results/
 analysis_output/
 reports/
@@ -177,13 +176,8 @@ venv/
 env/
 
 # Project specific
-Analysis_Pipeline/output/
 Analysis_Pipeline/test_output/
 Analysis_Pipeline/05_logging/*.log
-Analysis_Pipeline/01_Decomposition_AR/output/
-Analysis_Pipeline/02_RAG_and_knowledgebase/output/
-Analysis_Pipeline/03_Evaluation/output/
-Analysis_Pipeline/04_Analysis/output/
 
 # Knowledge base storage
 Analysis_Pipeline/02_RAG_and_knowledgebase/kb_storage/
