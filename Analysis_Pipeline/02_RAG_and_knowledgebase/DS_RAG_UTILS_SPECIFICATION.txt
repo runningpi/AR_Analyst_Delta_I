@@ -1,0 +1,66 @@
+DS-RAG UTILS SPECIFICATION
+==========================
+
+This document outlines what the new DS_RAG_utils.py should do and how it should be structured.
+
+OVERALL PURPOSE
+---------------
+The DS_RAG_utils module manages the knowledge base using the DS-RAG framework.
+It serves as the interface between the pipeline and the DS-RAG library for:
+- Creating and initializing knowledge bases
+- Adding company documents to the knowledge base
+- Querying the knowledge base for relevant evidence
+
+CORE FUNCTIONALITY
+------------------
+
+1. KNOWLEDGE BASE INITIALIZATION
+   - Initialize DS-RAG KnowledgeBase instance
+   - Handle storage directory creation
+   - Support configuration options:
+     * kb_id: Unique identifier for the knowledge base
+     * storage_directory: Where to store KB data
+     * llm_model: Model for embeddings (default: "gpt-4o-mini")
+     * use_reranker: Whether to use Cohere reranking (default: True)
+     * use_semantic_sectioning: Whether to use semantic sectioning (default: True)
+   - Check for required API keys (OPENAI_API_KEY, CO_API_KEY if reranking enabled)
+
+3. DOCUMENT ADDITION
+   - add_document(doc_id, text): Add single document to KB
+   
+   - add_documents_from_directory(directory, file_pattern): Batch add documents (call add_document for every document)
+   
+4. QUERY OPERATIONS
+   - query(query_text, top_k=5): Search knowledge base
+     * Call kb.query([query_text]) and extract results
+     * Handle empty results gracefully
+     * Return list of result dictionaries with:
+       - content: The text content of the matching chunk
+       - score: Relevance score
+       - doc_id: Document identifier
+       - chunk_start, chunk_end: Position in document (if available)
+       - metadata: Additional metadata (if available)
+
+INTEGRATION POINTS
+------------------
+
+The KnowledgeBaseManager is used by:
+1. pipeline.py:setup_knowledge_base()
+   - Creates manager instance
+   - Adds company documents from config.company_data_dir
+   
+2. matching_utils.py:SentenceMatcher
+   - Receives kb_manager in __init__
+   - Calls kb_manager.query() for each snippet
+
+REQUIRED DEPENDENCIES
+---------------------
+- dsrag library (dsrag.knowledge_base.KnowledgeBase)
+- openai library (for API)
+- os (for environment variables)
+
+CONFIGURATION REQUIREMENTS
+---------------------------
+- OPENAI_API_KEY: Required environment variable
+- CO_API_KEY: Required if use_reranker=True
+

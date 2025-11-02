@@ -52,7 +52,22 @@ class EvaluationAnalyzer:
                     "evidence_count": len(eval_item.get("evidence", [])),
                 })
         
-        return pd.DataFrame(rows)
+        # Ensure DataFrame has all expected columns even when empty
+        expected_columns = [
+            "section", "sentence", "source", "sentence_type",
+            "source_confidence", "sentence_type_confidence",
+            "evaluation", "reason", "evidence_count"
+        ]
+        
+        df = pd.DataFrame(rows)
+        
+        # Add missing columns if DataFrame is empty
+        if df.empty:
+            for col in expected_columns:
+                if col not in df.columns:
+                    df[col] = pd.Series(dtype='object' if col in ["section", "sentence", "source", "sentence_type", "evaluation", "reason"] else 'float64')
+        
+        return df
     
     def get_overall_stats(self) -> Dict[str, Any]:
         """
@@ -63,33 +78,63 @@ class EvaluationAnalyzer:
         """
         total = len(self.df)
         
+        # Handle empty DataFrame
+        if total == 0 or self.df.empty:
+            logger.warning("No evaluations found - returning empty statistics")
+            return {
+                "total_sentences": 0,
+                "by_evaluation": {},
+                "by_source": {},
+                "by_sentence_type": {},
+                "by_section": {},
+                "confidence_stats": {
+                    "source_confidence": {"mean": 0.0, "std": 0.0, "min": 0.0, "max": 0.0},
+                    "sentence_type_confidence": {"mean": 0.0, "std": 0.0, "min": 0.0, "max": 0.0},
+                },
+            }
+        
+        # Check if required columns exist before accessing them
         # Count by evaluation label
-        eval_counts = self.df["evaluation"].value_counts().to_dict()
+        eval_counts = {}
+        if "evaluation" in self.df.columns:
+            eval_counts = self.df["evaluation"].value_counts().to_dict()
         
         # Count by source
-        source_counts = self.df["source"].value_counts().to_dict()
+        source_counts = {}
+        if "source" in self.df.columns:
+            source_counts = self.df["source"].value_counts().to_dict()
         
         # Count by sentence type
-        sentence_type_counts = self.df["sentence_type"].value_counts().to_dict()
+        sentence_type_counts = {}
+        if "sentence_type" in self.df.columns:
+            sentence_type_counts = self.df["sentence_type"].value_counts().to_dict()
         
         # Count by section
-        section_counts = self.df["section"].value_counts().to_dict()
+        section_counts = {}
+        if "section" in self.df.columns:
+            section_counts = self.df["section"].value_counts().to_dict()
         
         # Confidence statistics
-        confidence_stats = {
-            "source_confidence": {
+        confidence_stats = {}
+        if "source_confidence" in self.df.columns and not self.df["source_confidence"].isna().all():
+            confidence_stats["source_confidence"] = {
                 "mean": float(self.df["source_confidence"].mean()),
                 "std": float(self.df["source_confidence"].std()),
                 "min": float(self.df["source_confidence"].min()),
                 "max": float(self.df["source_confidence"].max()),
-            },
-            "sentence_type_confidence": {
+            }
+        else:
+            confidence_stats["source_confidence"] = {"mean": 0.0, "std": 0.0, "min": 0.0, "max": 0.0}
+        
+        if "sentence_type_confidence" in self.df.columns and not self.df["sentence_type_confidence"].isna().all():
+            confidence_stats["sentence_type_confidence"] = {
                 "mean": float(self.df["sentence_type_confidence"].mean()),
                 "std": float(self.df["sentence_type_confidence"].std()),
                 "min": float(self.df["sentence_type_confidence"].min()),
                 "max": float(self.df["sentence_type_confidence"].max()),
             }
-        }
+        else:
+            confidence_stats["sentence_type_confidence"] = {"mean": 0.0, "std": 0.0, "min": 0.0, "max": 0.0}
         
         stats = {
             "total_sentences": total,
@@ -110,6 +155,10 @@ class EvaluationAnalyzer:
         Returns:
             DataFrame with sections as rows, evaluation labels as columns
         """
+        if self.df.empty or "section" not in self.df.columns or "evaluation" not in self.df.columns:
+            logger.warning("Cannot generate section breakdown - empty DataFrame or missing columns")
+            return pd.DataFrame()
+        
         breakdown = pd.crosstab(
             self.df["section"],
             self.df["evaluation"],
@@ -132,6 +181,10 @@ class EvaluationAnalyzer:
         Returns:
             DataFrame with sources as rows, evaluation labels as columns
         """
+        if self.df.empty or "source" not in self.df.columns or "evaluation" not in self.df.columns:
+            logger.warning("Cannot generate source breakdown - empty DataFrame or missing columns")
+            return pd.DataFrame()
+        
         # Filter to relevant sources
         relevant_sources = [
             "primary",
@@ -139,6 +192,10 @@ class EvaluationAnalyzer:
             "tertiary_interpretive"
         ]
         df_filtered = self.df[self.df["source"].isin(relevant_sources)]
+        
+        if df_filtered.empty:
+            logger.warning("No relevant sources found for breakdown")
+            return pd.DataFrame()
         
         breakdown = pd.crosstab(
             df_filtered["source"],
@@ -162,6 +219,10 @@ class EvaluationAnalyzer:
         Returns:
             DataFrame with sections as rows, sources as columns
         """
+        if self.df.empty or "source" not in self.df.columns or "section" not in self.df.columns:
+            logger.warning("Cannot generate source distribution - empty DataFrame or missing columns")
+            return pd.DataFrame()
+        
         # Filter to relevant sources
         relevant_sources = [
             "primary",
@@ -169,6 +230,10 @@ class EvaluationAnalyzer:
             "tertiary_interpretive"
         ]
         df_filtered = self.df[self.df["source"].isin(relevant_sources)]
+        
+        if df_filtered.empty:
+            logger.warning("No relevant sources found for distribution")
+            return pd.DataFrame()
         
         distribution = pd.crosstab(
             df_filtered["section"],
@@ -192,6 +257,10 @@ class EvaluationAnalyzer:
         Returns:
             DataFrame with sentence types as rows, evaluation labels as columns
         """
+        if self.df.empty or "sentence_type" not in self.df.columns or "evaluation" not in self.df.columns:
+            logger.warning("Cannot generate sentence type breakdown - empty DataFrame or missing columns")
+            return pd.DataFrame()
+        
         breakdown = pd.crosstab(
             self.df["sentence_type"],
             self.df["evaluation"],
@@ -250,27 +319,38 @@ class EvaluationAnalyzer:
         Returns:
             DataFrame with matching sentences
         """
+        if self.df.empty:
+            logger.warning("Cannot search - empty DataFrame")
+            return pd.DataFrame()
+        
         df = self.df.copy()
         
-        # Apply filters
-        if section is not None:
+        # Apply filters (check column exists before filtering)
+        if section is not None and "section" in df.columns:
             df = df[df["section"].str.lower() == section.lower()]
         
-        if evaluation is not None:
+        if evaluation is not None and "evaluation" in df.columns:
             df = df[df["evaluation"].str.lower() == evaluation.lower()]
         
-        if source is not None:
+        if source is not None and "source" in df.columns:
             df = df[df["source"].str.lower() == source.lower()]
         
-        if sentence_type is not None:
+        if sentence_type is not None and "sentence_type" in df.columns:
             df = df[df["sentence_type"].str.lower() == sentence_type.lower()]
         
         # Limit results
         if limit is not None:
             df = df.head(limit)
         
-        # Select relevant columns
-        result = df[["section", "source", "sentence_type", "source_confidence", "sentence_type_confidence", "sentence", "evaluation"]].reset_index(drop=True)
+        # Select relevant columns (only if they exist)
+        expected_cols = ["section", "source", "sentence_type", "source_confidence", "sentence_type_confidence", "sentence", "evaluation"]
+        available_cols = [col for col in expected_cols if col in df.columns]
+        
+        if not available_cols:
+            logger.warning("No expected columns found in DataFrame")
+            return pd.DataFrame()
+        
+        result = df[available_cols].reset_index(drop=True)
         
         logger.info(f"Search found {len(result)} matching sentences")
         return result
@@ -282,52 +362,65 @@ class EvaluationAnalyzer:
         Returns:
             Dictionary with confidence analysis
         """
+        if self.df.empty:
+            logger.warning("Cannot generate confidence analysis - empty DataFrame")
+            return {
+                "by_source": {},
+                "by_sentence_type": {},
+                "overall": {
+                    "source_confidence": {"mean": 0.0, "std": 0.0, "median": 0.0},
+                    "sentence_type_confidence": {"mean": 0.0, "std": 0.0, "median": 0.0},
+                }
+            }
+        
         analysis = {
             "by_source": {},
             "by_sentence_type": {},
             "overall": {
                 "source_confidence": {
-                    "mean": float(self.df["source_confidence"].mean()),
-                    "std": float(self.df["source_confidence"].std()),
-                    "median": float(self.df["source_confidence"].median()),
+                    "mean": float(self.df["source_confidence"].mean()) if "source_confidence" in self.df.columns and not self.df["source_confidence"].isna().all() else 0.0,
+                    "std": float(self.df["source_confidence"].std()) if "source_confidence" in self.df.columns and not self.df["source_confidence"].isna().all() else 0.0,
+                    "median": float(self.df["source_confidence"].median()) if "source_confidence" in self.df.columns and not self.df["source_confidence"].isna().all() else 0.0,
                 },
                 "sentence_type_confidence": {
-                    "mean": float(self.df["sentence_type_confidence"].mean()),
-                    "std": float(self.df["sentence_type_confidence"].std()),
-                    "median": float(self.df["sentence_type_confidence"].median()),
+                    "mean": float(self.df["sentence_type_confidence"].mean()) if "sentence_type_confidence" in self.df.columns and not self.df["sentence_type_confidence"].isna().all() else 0.0,
+                    "std": float(self.df["sentence_type_confidence"].std()) if "sentence_type_confidence" in self.df.columns and not self.df["sentence_type_confidence"].isna().all() else 0.0,
+                    "median": float(self.df["sentence_type_confidence"].median()) if "sentence_type_confidence" in self.df.columns and not self.df["sentence_type_confidence"].isna().all() else 0.0,
                 }
             }
         }
         
         # Confidence by source
-        for source in self.df["source"].unique():
-            source_df = self.df[self.df["source"] == source]
-            analysis["by_source"][source] = {
-                "source_confidence": {
-                    "mean": float(source_df["source_confidence"].mean()),
-                    "std": float(source_df["source_confidence"].std()),
-                    "count": len(source_df)
-                },
-                "sentence_type_confidence": {
-                    "mean": float(source_df["sentence_type_confidence"].mean()),
-                    "std": float(source_df["sentence_type_confidence"].std()),
+        if "source" in self.df.columns:
+            for source in self.df["source"].unique():
+                source_df = self.df[self.df["source"] == source]
+                analysis["by_source"][source] = {
+                    "source_confidence": {
+                        "mean": float(source_df["source_confidence"].mean()) if "source_confidence" in source_df.columns and not source_df["source_confidence"].isna().all() else 0.0,
+                        "std": float(source_df["source_confidence"].std()) if "source_confidence" in source_df.columns and not source_df["source_confidence"].isna().all() else 0.0,
+                        "count": len(source_df)
+                    },
+                    "sentence_type_confidence": {
+                        "mean": float(source_df["sentence_type_confidence"].mean()) if "sentence_type_confidence" in source_df.columns and not source_df["sentence_type_confidence"].isna().all() else 0.0,
+                        "std": float(source_df["sentence_type_confidence"].std()) if "sentence_type_confidence" in source_df.columns and not source_df["sentence_type_confidence"].isna().all() else 0.0,
+                    }
                 }
-            }
         
         # Confidence by sentence type
-        for sentence_type in self.df["sentence_type"].unique():
-            type_df = self.df[self.df["sentence_type"] == sentence_type]
-            analysis["by_sentence_type"][sentence_type] = {
-                "source_confidence": {
-                    "mean": float(type_df["source_confidence"].mean()),
-                    "std": float(type_df["source_confidence"].std()),
-                    "count": len(type_df)
-                },
-                "sentence_type_confidence": {
-                    "mean": float(type_df["sentence_type_confidence"].mean()),
-                    "std": float(type_df["sentence_type_confidence"].std()),
+        if "sentence_type" in self.df.columns:
+            for sentence_type in self.df["sentence_type"].unique():
+                type_df = self.df[self.df["sentence_type"] == sentence_type]
+                analysis["by_sentence_type"][sentence_type] = {
+                    "source_confidence": {
+                        "mean": float(type_df["source_confidence"].mean()) if "source_confidence" in type_df.columns and not type_df["source_confidence"].isna().all() else 0.0,
+                        "std": float(type_df["source_confidence"].std()) if "source_confidence" in type_df.columns and not type_df["source_confidence"].isna().all() else 0.0,
+                        "count": len(type_df)
+                    },
+                    "sentence_type_confidence": {
+                        "mean": float(type_df["sentence_type_confidence"].mean()) if "sentence_type_confidence" in type_df.columns and not type_df["sentence_type_confidence"].isna().all() else 0.0,
+                        "std": float(type_df["sentence_type_confidence"].std()) if "sentence_type_confidence" in type_df.columns and not type_df["sentence_type_confidence"].isna().all() else 0.0,
+                    }
                 }
-            }
         
         return analysis
     
@@ -339,6 +432,26 @@ class EvaluationAnalyzer:
             Dictionary with coverage statistics
         """
         total = len(self.df)
+        
+        # Handle empty DataFrame
+        if total == 0 or self.df.empty or "evaluation" not in self.df.columns:
+            logger.warning("Cannot generate coverage summary - empty DataFrame or missing evaluation column")
+            return {
+                "total_sentences": 0,
+                "covered": 0,
+                "covered_percentage": 0.0,
+                "not_covered": 0,
+                "not_covered_percentage": 0.0,
+                "contradicted": 0,
+                "contradicted_percentage": 0.0,
+                "breakdown": {
+                    "Supported": 0,
+                    "Partially Supported": 0,
+                    "Not Supported": 0,
+                    "Contradicted": 0,
+                    "No Evidence": 0,
+                }
+            }
         
         # Group evaluations
         supported = len(self.df[self.df["evaluation"] == "Supported"])
@@ -408,31 +521,45 @@ class ReportGenerator:
         coverage = self.analyzer.get_coverage_summary()
         lines.append("COVERAGE SUMMARY")
         lines.append("-" * 80)
-        lines.append(f"Covered: {coverage['covered']} ({coverage['covered_percentage']}%)")
-        lines.append(f"Not Covered: {coverage['not_covered']} ({coverage['not_covered_percentage']}%)")
-        lines.append(f"Contradicted: {coverage['contradicted']} ({coverage['contradicted_percentage']}%)")
+        covered = coverage.get('covered', 0)
+        covered_percentage = coverage.get('covered_percentage', 0.0)
+        not_covered = coverage.get('not_covered', 0)
+        not_covered_percentage = coverage.get('not_covered_percentage', 0.0)
+        contradicted = coverage.get('contradicted', 0)
+        contradicted_percentage = coverage.get('contradicted_percentage', 0.0)
+        
+        lines.append(f"Covered: {covered} ({covered_percentage}%)")
+        lines.append(f"Not Covered: {not_covered} ({not_covered_percentage}%)")
+        lines.append(f"Contradicted: {contradicted} ({contradicted_percentage}%)")
         lines.append("")
         
         lines.append("Breakdown:")
-        for label, count in coverage['breakdown'].items():
-            percentage = round(count / stats['total_sentences'] * 100, 1)
+        breakdown = coverage.get('breakdown', {})
+        for label, count in breakdown.items():
+            percentage = round(count / stats['total_sentences'] * 100, 1) if stats['total_sentences'] > 0 else 0.0
             lines.append(f"  - {label}: {count} ({percentage}%)")
         lines.append("")
         
         # By source
         lines.append("BY SOURCE TYPE")
         lines.append("-" * 80)
-        for source, count in stats['by_source'].items():
-            percentage = round(count / stats['total_sentences'] * 100, 1)
+        by_source = stats.get('by_source', {})
+        for source, count in by_source.items():
+            percentage = round(count / stats['total_sentences'] * 100, 1) if stats['total_sentences'] > 0 else 0.0
             lines.append(f"  - {source}: {count} ({percentage}%)")
+        if not by_source:
+            lines.append("  (No data available)")
         lines.append("")
         
         # By sentence type
         lines.append("BY SENTENCE TYPE")
         lines.append("-" * 80)
-        for sentence_type, count in stats['by_sentence_type'].items():
-            percentage = round(count / stats['total_sentences'] * 100, 1)
+        by_sentence_type = stats.get('by_sentence_type', {})
+        for sentence_type, count in by_sentence_type.items():
+            percentage = round(count / stats['total_sentences'] * 100, 1) if stats['total_sentences'] > 0 else 0.0
             lines.append(f"  - {sentence_type}: {count} ({percentage}%)")
+        if not by_sentence_type:
+            lines.append("  (No data available)")
         lines.append("")
         
         # Confidence statistics
@@ -461,9 +588,12 @@ class ReportGenerator:
         # By section
         lines.append("BY SECTION")
         lines.append("-" * 80)
-        for section, count in stats['by_section'].items():
-            percentage = round(count / stats['total_sentences'] * 100, 1)
+        by_section = stats.get('by_section', {})
+        for section, count in by_section.items():
+            percentage = round(count / stats['total_sentences'] * 100, 1) if stats['total_sentences'] > 0 else 0.0
             lines.append(f"  - {section}: {count} ({percentage}%)")
+        if not by_section:
+            lines.append("  (No data available)")
         lines.append("")
         
         lines.append("=" * 80)

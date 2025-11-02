@@ -9,6 +9,5 @@ This module handles:
 
 from .DS_RAG_utils import KnowledgeBaseManager
 from .matching_utils import SentenceMatcher
-from .encoding_utils import EncodingUtils
 
-__all__ = ['KnowledgeBaseManager', 'SentenceMatcher', 'EncodingUtils']
+__all__ = ['KnowledgeBaseManager', 'SentenceMatcher']

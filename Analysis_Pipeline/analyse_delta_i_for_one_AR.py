@@ -176,22 +176,22 @@ def main(
                 analyzer = pipeline.run_full_pipeline(text_dict)
         
         # Print summary
-        print("\n" + "=" * 80)
-        print("ANALYSIS COMPLETE!")
-        print("=" * 80)
+        print("[Pipeline] " + "\n" + "=" * 80)
+        print("[Pipeline] ANALYSIS COMPLETE!")
+        print("[Pipeline] " + "=" * 80)
         
         coverage = analyzer.get_coverage_summary()
-        print(f"\nTotal Sentences: {coverage['total_sentences']}")
-        print(f"Covered: {coverage['covered']} ({coverage['covered_percentage']}%)")
-        print(f"Not Covered: {coverage['not_covered']} ({coverage['not_covered_percentage']}%)")
-        print(f"Contradicted: {coverage['contradicted']} ({coverage['contradicted_percentage']}%)")
+        print(f"[Pipeline] \nTotal Sentences: {coverage['total_sentences']}")
+        print(f"[Pipeline] Covered: {coverage['covered']} ({coverage['covered_percentage']}%)")
+        print(f"[Pipeline] Not Covered: {coverage['not_covered']} ({coverage['not_covered_percentage']}%)")
+        print(f"[Pipeline] Contradicted: {coverage['contradicted']} ({coverage['contradicted_percentage']}%)")
         
-        print(f"\nResults saved to stage-specific directories:")
-        print(f"  - Analysis reports: 04_Analysis/output/{config.analyst_report_path.stem}/")
-        print(f"  - Evaluations: 03_Evaluation/output/{config.analyst_report_path.stem}/")
-        print(f"  - KB queries: 02_RAG_and_knowledgebase/output/{config.analyst_report_path.stem}/")
-        print(f"  - Classifications: 01_Decomposition_AR/output/classified_sentences/{config.analyst_report_path.stem}/")
-        print("=" * 80 + "\n")
+        print(f"[Pipeline] \nResults saved to stage-specific directories:")
+        print(f"[Pipeline]   - Analysis reports: 04_Analysis/output/{config.analyst_report_path.stem}/")
+        print(f"[Pipeline]   - Evaluations: 03_Evaluation/output/{config.analyst_report_path.stem}/")
+        print(f"[Pipeline]   - KB queries: 02_RAG_and_knowledgebase/output/{config.analyst_report_path.stem}/")
+        print(f"[Pipeline]   - Classifications: 01_Decomposition_AR/output/classified_sentences/{config.analyst_report_path.stem}/")
+        print("[Pipeline] " + "=" * 80 + "\n")
         
     except Exception as e:
         logger.error(f"Pipeline failed with error: {e}", exc_info=True)

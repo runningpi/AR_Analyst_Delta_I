@@ -87,14 +87,7 @@ class ARAnalysisPipeline:
         
         # Add company documents (both TXT and MD files)
         doc_ids = []
-        
-        # # Add .txt files
-        # txt_docs = self.kb_manager.add_documents_from_directory(
-        #     directory=self.config.company_data_dir,
-        #     file_pattern="*.txt",
-        # )
-        # doc_ids.extend(txt_docs)
-        
+
         # Add .md files (company reports)
         md_docs = self.kb_manager.add_documents_from_directory(
             directory=self.config.company_data_dir,
@@ -492,15 +485,18 @@ class ARAnalysisPipeline:
         logger.info(f"Saved analysis report: {report_path}")
         
         # Save detailed statistics
+        import json
         stats = analyzer.get_overall_stats()
         stats_path = doc_output_dir / "statistics.json"
-        self.text_manager.save_json(stats, stats_path)
+        with open(stats_path, 'w', encoding='utf-8') as f:
+            json.dump(stats, f, ensure_ascii=False, indent=2)
         logger.info(f"Saved statistics: {stats_path}")
         
         # Save coverage summary
         coverage = analyzer.get_coverage_summary()
         coverage_path = doc_output_dir / "coverage_summary.json"
-        self.text_manager.save_json(coverage, coverage_path)
+        with open(coverage_path, 'w', encoding='utf-8') as f:
+            json.dump(coverage, f, ensure_ascii=False, indent=2)
         logger.info(f"Saved coverage summary: {coverage_path}")
         
         # Save metadata

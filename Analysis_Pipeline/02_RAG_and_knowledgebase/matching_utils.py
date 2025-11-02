@@ -6,12 +6,118 @@ against company documents using the knowledge base.
 """
 
 import logging
+import re
 from typing import Dict, List, Any, Optional
 from tqdm import tqdm
 
 from .DS_RAG_utils import KnowledgeBaseManager
 
 logger = logging.getLogger(__name__)
+
+
+def is_readable_text(text: str, min_readable_ratio: float = 0.7) -> bool:
+    """
+    Check if text is readable (not binary/corrupted data).
+    
+    Args:
+        text: Text to check
+        min_readable_ratio: Minimum ratio of printable characters (0.0-1.0)
+        
+    Returns:
+        True if text appears to be readable text
+    """
+    if not text or not text.strip():
+        return False
+    
+    # Count printable ASCII characters (space through ~)
+    printable_count = sum(1 for c in text if 32 <= ord(c) <= 126 or c in '\n\t')
+    total_chars = len(text)
+    
+    if total_chars == 0:
+        return False
+    
+    readable_ratio = printable_count / total_chars
+    
+    # Also check for excessive binary/corruption indicators
+    # Count non-printable control characters (excluding common whitespace)
+    control_chars = sum(1 for c in text if ord(c) < 32 and c not in '\n\t\r')
+    control_ratio = control_chars / total_chars if total_chars > 0 else 0
+    
+    # Check for common PDF binary patterns (object references, streams, etc.)
+    pdf_binary_patterns = [
+        r'endobj',  # PDF object markers
+        r'stream\s*\n.*?endstream',  # PDF stream markers
+        r'/Font\s*<',  # PDF font objects
+        r'/XObject',  # PDF XObject markers
+    ]
+    
+    has_pdf_binary = any(re.search(pattern, text, re.IGNORECASE | re.DOTALL) for pattern in pdf_binary_patterns)
+    
+    # Text is readable if:
+    # - High ratio of printable characters
+    # - Low ratio of control characters
+    # - No obvious PDF binary markers
+    is_readable = (
+        readable_ratio >= min_readable_ratio and
+        control_ratio < 0.1 and
+        not has_pdf_binary
+    )
+    
+    return is_readable
+
+
+def clean_evidence_content(content: str) -> str:
+    """
+    Clean corrupted/binary content from evidence text.
+    
+    Args:
+        content: Raw content string
+        
+    Returns:
+        Cleaned content string, or empty string if too corrupted
+    """
+    if not content:
+        return ""
+    
+    # First check if it's readable
+    if not is_readable_text(content):
+        logger.warning(f"Evidence content appears corrupted (readable ratio too low)")
+        return ""
+    
+    # Remove document context prefix if it contains corrupted data
+    # Look for "Document context:" followed by potentially corrupted metadata
+    lines = content.split('\n')
+    cleaned_lines = []
+    skip_until_content = False
+    
+    for i, line in enumerate(lines):
+        # If we find "Document context:", check next lines for corruption
+        if 'Document context:' in line or 'Document context:' in line.lower():
+            # Skip this line and check if following lines are corrupted
+            skip_until_content = True
+            # Look ahead a few lines to find where content starts
+            continue
+        
+        # If we're skipping and find a line that looks like actual content, start including
+        if skip_until_content:
+            if is_readable_text(line, min_readable_ratio=0.8) and len(line.strip()) > 20:
+                skip_until_content = False
+                cleaned_lines.append(line)
+            # Skip corrupted metadata lines
+            continue
+        
+        # Include readable lines
+        if is_readable_text(line, min_readable_ratio=0.6) or not line.strip():
+            cleaned_lines.append(line)
+    
+    cleaned = '\n'.join(cleaned_lines).strip()
+    
+    # Final check - if cleaned content is still mostly unreadable, return empty
+    if cleaned and not is_readable_text(cleaned, min_readable_ratio=0.5):
+        logger.warning("Cleaned evidence content still appears corrupted")
+        return ""
+    
+    return cleaned
 
 
 class EvidenceFormatter:
@@ -79,22 +185,30 @@ class EvidenceFormatter:
     
     def extract_evidence_content(self, evidence_list: List[Dict[str, Any]]) -> List[str]:
         """
-        Extract content from evidence list.
+        Extract content from evidence list, filtering out corrupted/binary content.
         
         Args:
             evidence_list: List of evidence dictionaries
             
         Returns:
-            List of evidence content strings
+            List of cleaned evidence content strings
         """
         if not evidence_list:
             return []
         
         content_list = []
         for evidence in evidence_list:
-            content = evidence.get('content', '')
-            if content and content.strip():
-                content_list.append(content.strip())
+            raw_content = evidence.get('content', '')
+            if not raw_content or not raw_content.strip():
+                continue
+            
+            # Clean and validate content
+            cleaned_content = clean_evidence_content(raw_content)
+            
+            if cleaned_content and cleaned_content.strip():
+                content_list.append(cleaned_content.strip())
+            else:
+                logger.debug(f"Filtered out corrupted evidence content")
         
         return content_list
 
@@ -145,13 +259,21 @@ class SentenceMatcher:
             # Query the knowledge base
             results = self.kb_manager.query(sentence, top_k=self.top_k)
             
-            # Format results as evidence
+            # Format results as evidence, cleaning content
             evidence = []
             for i, result in enumerate(results):
+                raw_content = result.get('content', '')
+                cleaned_content = clean_evidence_content(raw_content) if raw_content else ''
+                
+                # Skip if content is too corrupted
+                if not cleaned_content:
+                    logger.debug(f"Skipping corrupted evidence result {i+1}")
+                    continue
+                
                 evidence_item = {
                     "rank": i + 1,
                     "score": float(result.get('score', 0.0)),
-                    "content": result.get('content', ''),
+                    "content": cleaned_content,
                     "doc_id": result.get('doc_id', ''),
                     "chunk_start": result.get('chunk_start', 0),
                     "chunk_end": result.get('chunk_end', 0),
@@ -282,11 +404,19 @@ class SentenceMatcher:
         sorted_evidence = sorted(evidence, key=lambda x: x.get('score', 0), reverse=True)
         top_evidence = sorted_evidence[:max_evidence]
         
-        # Format for output
+        # Format for output, cleaning content
         formatted_evidence = []
         for item in top_evidence:
+            raw_content = item.get('content', '')
+            cleaned_content = clean_evidence_content(raw_content) if raw_content else ''
+            
+            # Skip if content is corrupted
+            if not cleaned_content:
+                logger.debug(f"Skipping corrupted evidence in formatted output")
+                continue
+            
             formatted_item = {
-                "content": item.get('content', ''),
+                "content": cleaned_content,
                 "score": item.get('score', 0.0),
                 "doc_id": item.get('doc_id', ''),
                 "rank": item.get('rank', 0)

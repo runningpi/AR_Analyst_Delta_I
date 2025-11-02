@@ -91,7 +91,7 @@ class PipelineConfig:
         if env_file.exists():
             load_dotenv(env_file)
         else:
-            print(f"Warning: .env file not found at {env_file}")
+            print(f"[Config] Warning: .env file not found at {env_file}")
             load_dotenv()  # Try to load from current directory
         
         # Parse paths from config
@@ -156,7 +156,7 @@ class PipelineConfig:
             raise ValueError("OPENAI_API_KEY not found in environment variables")
         
         if not self.cohere_api_key:
-            print("Warning: COHERE_API_KEY not found. Reranking will not be available.")
+            print("[Config] Warning: COHERE_API_KEY not found. Reranking will not be available.")
     
     
     def get_output_path(self, filename: str) -> Path:

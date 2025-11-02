@@ -21,7 +21,10 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.docx
 MANIFEST
+*.gitignore
+./Playground/
 
 # PyInstaller
 *.manifest
@@ -192,3 +195,4 @@ Analysis_Pipeline/01_Decomposition_AR/ocr_content/
 *.tmp
 *.temp
 temp_*
+.gitignore

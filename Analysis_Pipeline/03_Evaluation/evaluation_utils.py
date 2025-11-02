@@ -139,12 +139,18 @@ Evidence from Knowledge Base:
             logger.info(f"Evaluating {len(items)} sentences in section: {section_name}")
             
             for item in items:
-                sentence = item.get("sentence", "")
+                # Get snippet/sentence text - prefer "snippet" (used in query results) over "sentence"
+                sentence = item.get("snippet", item.get("sentence", ""))
                 source = item.get("source", "unknown")
                 sentence_type = item.get("sentence_type", "qualitative")
                 source_confidence = float(item.get("source_confidence", 0.5))
                 sentence_type_confidence = float(item.get("sentence_type_confidence", 0.5))
                 evidence = item.get("evidence", [])
+                
+                # Skip if sentence/snippet is empty
+                if not sentence or not sentence.strip():
+                    logger.warning(f"Skipping empty sentence/snippet in section {section_name}")
+                    continue
                 
                 # Extract evidence content for evaluation
                 evidence_content = self.evidence_formatter.extract_evidence_content(evidence)
