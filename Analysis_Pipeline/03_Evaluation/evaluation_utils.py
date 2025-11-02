@@ -141,10 +141,14 @@ Evidence from Knowledge Base:
             for item in items:
                 # Get snippet/sentence text - prefer "snippet" (used in query results) over "sentence"
                 sentence = item.get("snippet", item.get("sentence", ""))
-                source = item.get("source", "unknown")
+                claim_type = item.get("claim_type", "hypothesis")
+                subject_scope = item.get("subject_scope", "company")
                 sentence_type = item.get("sentence_type", "qualitative")
-                source_confidence = float(item.get("source_confidence", 0.5))
+                content_relevance = item.get("content_relevance", "company_relevant")
+                claim_type_confidence = float(item.get("claim_type_confidence", 0.5))
+                subject_scope_confidence = float(item.get("subject_scope_confidence", 0.5))
                 sentence_type_confidence = float(item.get("sentence_type_confidence", 0.5))
+                content_relevance_confidence = float(item.get("content_relevance_confidence", 0.5))
                 evidence = item.get("evidence", [])
                 
                 # Skip if sentence/snippet is empty
@@ -171,10 +175,14 @@ Evidence from Knowledge Base:
                 sentence_eval = SentenceEvaluation(
                     sentence=sentence,
                     section=section_name,
-                    source=source,
+                    claim_type=claim_type,
+                    subject_scope=subject_scope,
                     sentence_type=sentence_type,
-                    source_confidence=source_confidence,
+                    content_relevance=content_relevance,
+                    claim_type_confidence=claim_type_confidence,
+                    subject_scope_confidence=subject_scope_confidence,
                     sentence_type_confidence=sentence_type_confidence,
+                    content_relevance_confidence=content_relevance_confidence,
                     evidence=evidence_strings,
                     evaluation=eval_result.evaluation,
                     reason=eval_result.reason,

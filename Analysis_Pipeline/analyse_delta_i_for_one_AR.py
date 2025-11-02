@@ -181,7 +181,15 @@ def main(
         print("[Pipeline] " + "=" * 80)
         
         coverage = analyzer.get_coverage_summary()
-        print(f"[Pipeline] \nTotal Sentences: {coverage['total_sentences']}")
+        total_relevant = coverage.get('total_sentences', 0)
+        total_all = coverage.get('total_sentences_all', total_relevant)
+        total_template = coverage.get('total_template_boilerplate', 0)
+        
+        print(f"[Pipeline] \nTotal Sentences (all): {total_all}")
+        if total_template > 0:
+            print(f"[Pipeline]   - Company Relevant: {total_relevant}")
+            print(f"[Pipeline]   - Template/Boilerplate (excluded): {total_template}")
+        print(f"[Pipeline] \nTotal Sentences (company_relevant only): {total_relevant}")
         print(f"[Pipeline] Covered: {coverage['covered']} ({coverage['covered_percentage']}%)")
         print(f"[Pipeline] Not Covered: {coverage['not_covered']} ({coverage['not_covered_percentage']}%)")
         print(f"[Pipeline] Contradicted: {coverage['contradicted']} ({coverage['contradicted_percentage']}%)")

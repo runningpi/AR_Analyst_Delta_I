@@ -2,14 +2,10 @@
 Sentence classification service using GPT.
 
 This service classifies sentences into categories:
-- primary: Derived from company disclosures (official data, management quotes)
-- secondary: Derived from market trends, third-party data, or inference
-- tertiary_interpretive: Analyst reasoning, synthesis, or speculation, buy/sell ratings
-- other: Everything which is not part of the other categories
-
-And by content type:
-- quantitative: Includes numbers, percentages, growth rates, EPS, margins, or price targets
-- qualitative: Descriptive statements, management assessments, strategic opinions
+- claim_type: assertion (verifiable statement) or hypothesis (non-verifiable statement)
+- subject_scope: company (about a specific firm), market (about industry/sector), or other (macroeconomic/unrelated)
+- sentence_type: quantitative (includes numbers) or qualitative (descriptive statements)
+- content_relevance: company_relevant or template_boilerplate
 
 And by information source (determined algorithmically by detecting markdown table tags):
 - text: Information comes from regular text/paragraphs in the analyst paper
@@ -39,8 +35,9 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
 # Import with proper module path
-core_models = __import__('00_core.models.sentence', fromlist=['SentenceSource', 'SentenceType', 'ContentRelevance', 'InformationSource', 'ClassifiedSentence'])
-SentenceSource = core_models.SentenceSource
+core_models = __import__('00_core.models.sentence', fromlist=['ClaimType', 'SubjectScope', 'SentenceType', 'ContentRelevance', 'InformationSource', 'ClassifiedSentence'])
+ClaimType = core_models.ClaimType
+SubjectScope = core_models.SubjectScope
 SentenceType = core_models.SentenceType
 ContentRelevance = core_models.ContentRelevance
 InformationSource = core_models.InformationSource
@@ -62,21 +59,29 @@ Output snippets:
 - “AMD sells GPUs”
 - “Sales of AMD graphics cards increased by 50% from 2023 to 2024.”
 
-For each snippet, classify into THREE categories:
+For each snippet, classify into FOUR categories:
 
-1. SOURCE TYPE (choose exactly one):
-   - primary: Derived from company disclosures (official data, management quotes, current stock market price and market value of the company)
-   - secondary: Derived from market trends, third-party data, or inference  
-   - tertiary_interpretive: Analyst reasoning, synthesis, or speculation
-   - other: Everything which is not part of the other categories
+1. CLAIM TYPE (choose exactly one):
+   - assertion: A verifiable statement about what is currently or was previously true. Can be checked against data, filings, or other objective evidence.
+     Example: "Revenue grew 12 percent in Q3 2025 according to the 10-Q."
+   - hypothesis: A non-verifiable statement about what may be true, why something happened, or what might happen. Includes forecasts, expectations, or causal reasoning.
+     Example: "Management expects gross margin to improve next year."
+   - other
+   
+2. SUBJECT SCOPE (choose exactly one):
+   - company: About a specific firm (revenues, margins, products, management actions).
+   - market: About an industry, sector, competitors, or demand/supply conditions.
+   - other
 
-2. CONTENT TYPE (choose exactly one):
+3. CONTENT TYPE (choose exactly one):
    - quantitative: Includes numbers, percentages, growth rates, EPS, margins, or price targets
    - qualitative: Descriptive statements, management assessments, strategic opinions
+   - other
 
-3. CONTENT RELEVANCE (choose exactly one):
+4. CONTENT RELEVANCE (choose exactly one):
    - company_relevant: The snippet is part of the analyst report and has actual relationship to the company being analyzed (company-specific information, analysis, or insights)
    - template_boilerplate: The snippet is part of a template, disclaimer, legal notice, or information about the analyst company itself (not related to the analyzed company)
+   - other
 
 For each snippet classification, also provide a confidence score from 0.0 to 1.0, where:
 - 1.0 = Very confident (clear, unambiguous classification)
@@ -86,7 +91,9 @@ For each snippet classification, also provide a confidence score from 0.0 to 1.0
 - 0.0-0.3 = Very uncertain (highly ambiguous)
 
 Return only valid JSON in the format:
-{ "snippets": [ {"snippet":"AMD sells graphics cards", "source":"primary", "sentence_type":"qualitative", "content_relevance":"company_relevant", "source_confidence":0.9, "sentence_type_confidence":0.8, "content_relevance_confidence":0.9}, {"snippet":"Sales of AMD graphics cards increased by 50% from 2023 to 2024", "source":"primary", "sentence_type":"quantitative", "content_relevance":"company_relevant", "source_confidence":0.9, "sentence_type_confidence":0.9, "content_relevance_confidence":0.9}, ... ] }
+{ "snippets": [ {"snippet":"AMD sells graphics cards", "claim_type":"assertion", "subject_scope":"company", "sentence_type":"qualitative", "content_relevance":"company_relevant", "claim_type_confidence":0.9, "subject_scope_confidence":0.9, "sentence_type_confidence":0.8, "content_relevance_confidence":0.9}, {"snippet":"Sales of AMD graphics cards increased by 50% from 2023 to 2024", "claim_type":"assertion", "subject_scope":"company", "sentence_type":"quantitative", "content_relevance":"company_relevant", "claim_type_confidence":0.9, "subject_scope_confidence":0.9, "sentence_type_confidence":0.9, "content_relevance_confidence":0.9}, ... ] }
+
+Note: If a snippet does not clearly fit into any category, use "other" as the classification.
 
 Extract all meaningful knowledge snippets from each sentence. Each snippet should be a complete, standalone piece of information.
 """
@@ -236,11 +243,13 @@ Extract all meaningful knowledge snippets from each sentence. Each snippet shoul
                     
                     snippets.append({
                         "snippet": snippet_text,
-                        "source": item.get("source", "tertiary_interpretive"),
-                        "sentence_type": item.get("sentence_type", "qualitative"),
-                        "content_relevance": item.get("content_relevance", "company_relevant"),
+                        "claim_type": item.get("claim_type", "other"),
+                        "subject_scope": item.get("subject_scope", "other"),
+                        "sentence_type": item.get("sentence_type", "other"),
+                        "content_relevance": item.get("content_relevance", "other"),
                         "information_source": information_source,
-                        "source_confidence": float(item.get("source_confidence", 0.5)),
+                        "claim_type_confidence": float(item.get("claim_type_confidence", 0.5)),
+                        "subject_scope_confidence": float(item.get("subject_scope_confidence", 0.5)),
                         "sentence_type_confidence": float(item.get("sentence_type_confidence", 0.5)),
                         "content_relevance_confidence": float(item.get("content_relevance_confidence", 0.5)),
                         "information_source_confidence": 1.0 if is_table else 0.9  # High confidence for algorithm-based detection
@@ -377,11 +386,13 @@ Extract all meaningful knowledge snippets from each sentence. Each snippet shoul
                     if snippet_data.get("snippet", "").strip():  # Only add non-empty snippets
                         snippets_by_section[section_name].append({
                             "snippet": snippet_data["snippet"],
-                            "source": snippet_data["source"],
+                            "claim_type": snippet_data["claim_type"],
+                            "subject_scope": snippet_data["subject_scope"],
                             "sentence_type": snippet_data["sentence_type"],
                             "content_relevance": snippet_data["content_relevance"],
                             "information_source": snippet_data["information_source"],
-                            "source_confidence": snippet_data["source_confidence"],
+                            "claim_type_confidence": snippet_data["claim_type_confidence"],
+                            "subject_scope_confidence": snippet_data["subject_scope_confidence"],
                             "sentence_type_confidence": snippet_data["sentence_type_confidence"],
                             "content_relevance_confidence": snippet_data["content_relevance_confidence"],
                             "information_source_confidence": snippet_data["information_source_confidence"],
@@ -413,19 +424,24 @@ Extract all meaningful knowledge snippets from each sentence. Each snippet shoul
         for section_name, items in classified_dict.items():
             for idx, item in enumerate(items):
                 try:
-                    source = SentenceSource(item["source"])
+                    claim_type = ClaimType(item.get("claim_type", "other"))
                 except ValueError:
-                    source = SentenceSource.OTHER
+                    claim_type = ClaimType.OTHER
                 
                 try:
-                    sentence_type = SentenceType(item["sentence_type"])
+                    subject_scope = SubjectScope(item.get("subject_scope", "other"))
                 except ValueError:
-                    sentence_type = SentenceType.QUALITATIVE
+                    subject_scope = SubjectScope.OTHER
                 
                 try:
-                    content_relevance = ContentRelevance(item.get("content_relevance", "company_relevant"))
+                    sentence_type = SentenceType(item.get("sentence_type", "other"))
                 except ValueError:
-                    content_relevance = ContentRelevance.COMPANY_RELEVANT
+                    sentence_type = SentenceType.OTHER
+                
+                try:
+                    content_relevance = ContentRelevance(item.get("content_relevance", "other"))
+                except ValueError:
+                    content_relevance = ContentRelevance.OTHER
                 
                 try:
                     information_source = InformationSource(item.get("information_source", "text"))
@@ -433,7 +449,8 @@ Extract all meaningful knowledge snippets from each sentence. Each snippet shoul
                     information_source = InformationSource.TEXT
                 
                 # Get confidence scores with defaults
-                source_confidence = float(item.get("source_confidence", 0.5))
+                claim_type_confidence = float(item.get("claim_type_confidence", 0.5))
+                subject_scope_confidence = float(item.get("subject_scope_confidence", 0.5))
                 sentence_type_confidence = float(item.get("sentence_type_confidence", 0.5))
                 content_relevance_confidence = float(item.get("content_relevance_confidence", 0.5))
                 information_source_confidence = float(item.get("information_source_confidence", 0.5))
@@ -442,11 +459,13 @@ Extract all meaningful knowledge snippets from each sentence. Each snippet shoul
                     text=item["snippet"],  # Use snippet as the text
                     section=section_name,
                     index=idx,
-                    source=source,
+                    claim_type=claim_type,
+                    subject_scope=subject_scope,
                     sentence_type=sentence_type,
                     content_relevance=content_relevance,
                     information_source=information_source,
-                    source_confidence=source_confidence,
+                    claim_type_confidence=claim_type_confidence,
+                    subject_scope_confidence=subject_scope_confidence,
                     sentence_type_confidence=sentence_type_confidence,
                     content_relevance_confidence=content_relevance_confidence,
                     information_source_confidence=information_source_confidence,

@@ -298,6 +298,7 @@ class SentenceMatcher:
     ) -> Dict[str, List[Dict[str, Any]]]:
         """
         Match all classified snippets against the knowledge base.
+        Only processes snippets with content_relevance = "company_relevant".
         
         Args:
             classified_snippets: Dictionary mapping sections to classified snippets
@@ -311,8 +312,10 @@ class SentenceMatcher:
                         "snippet": "snippet text",
                         "source": "primary",
                         "sentence_type": "qualitative",
+                        "content_relevance": "company_relevant",
                         "source_confidence": 0.9,
                         "sentence_type_confidence": 0.8,
+                        "content_relevance_confidence": 0.9,
                         "evidence": [
                             {
                                 "content": "evidence content",
@@ -327,17 +330,38 @@ class SentenceMatcher:
         """
         logger.info("Starting snippet matching against knowledge base")
         
-        query_results = {}
-        total_snippets = sum(len(snippets) for snippets in classified_snippets.values())
+        # Filter to only include company_relevant snippets
+        filtered_snippets = {}
+        total_before_filter = 0
+        total_after_filter = 0
         
-        logger.info(f"Processing {total_snippets} snippets across {len(classified_snippets)} sections")
+        for section_name, snippets in classified_snippets.items():
+            total_before_filter += len(snippets)
+            filtered = [
+                snippet for snippet in snippets 
+                if snippet.get('content_relevance', 'company_relevant') == 'company_relevant'
+            ]
+            total_after_filter += len(filtered)
+            if filtered:
+                filtered_snippets[section_name] = filtered
+            # Log filtered out snippets
+            filtered_out = len(snippets) - len(filtered)
+            if filtered_out > 0:
+                logger.info(f"Filtered out {filtered_out} template_boilerplate snippets from section: {section_name}")
+        
+        logger.info(f"Filtered snippets: {total_before_filter} total → {total_after_filter} company_relevant ({total_before_filter - total_after_filter} template_boilerplate excluded)")
+        
+        query_results = {}
+        total_snippets = sum(len(snippets) for snippets in filtered_snippets.values())
+        
+        logger.info(f"Processing {total_snippets} company_relevant snippets across {len(filtered_snippets)} sections")
         
         # Create progress bar if requested
         if show_progress:
             pbar = tqdm(total=total_snippets, desc="Matching snippets")
         
         try:
-            for section_name, snippets in classified_snippets.items():
+            for section_name, snippets in filtered_snippets.items():
                 logger.info(f"Processing section: {section_name} ({len(snippets)} snippets)")
                 
                 section_results = []
@@ -352,13 +376,17 @@ class SentenceMatcher:
                     # Format evidence for output (top 5 results)
                     formatted_evidence = self._format_evidence_for_output(evidence, max_evidence=5)
                     
-                    # Create result in the required format, preserving all classification data
+                    # Create result in the required format, preserving all classification data including content_relevance
                     result = {
                         "snippet": snippet_text,
-                        "source": snippet_data.get('source', 'unknown'),
+                        "claim_type": snippet_data.get('claim_type', 'hypothesis'),
+                        "subject_scope": snippet_data.get('subject_scope', 'company'),
                         "sentence_type": snippet_data.get('sentence_type', 'qualitative'),
-                        "source_confidence": snippet_data.get('source_confidence', 0.5),
+                        "content_relevance": snippet_data.get('content_relevance', 'company_relevant'),
+                        "claim_type_confidence": snippet_data.get('claim_type_confidence', 0.5),
+                        "subject_scope_confidence": snippet_data.get('subject_scope_confidence', 0.5),
                         "sentence_type_confidence": snippet_data.get('sentence_type_confidence', 0.5),
+                        "content_relevance_confidence": snippet_data.get('content_relevance_confidence', 0.5),
                         "evidence": formatted_evidence
                     }
                     

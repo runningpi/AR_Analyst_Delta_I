@@ -180,7 +180,7 @@ Analysis_Pipeline/test_output/
 Analysis_Pipeline/05_logging/*.log
 
 # Knowledge base storage
-Analysis_Pipeline/02_RAG_and_knowledgebase/kb_storage/
+# Analysis_Pipeline/02_RAG_and_knowledgebase/kb_storage/
 
 # OCR content (can be regenerated)
 Analysis_Pipeline/01_Decomposition_AR/ocr_content/

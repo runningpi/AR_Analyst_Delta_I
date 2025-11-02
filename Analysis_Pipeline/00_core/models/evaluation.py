@@ -43,10 +43,14 @@ class SentenceEvaluation(BaseModel):
     
     sentence: str = Field(..., description="The sentence being evaluated")
     section: str = Field(..., description="Section the sentence belongs to")
-    source: str = Field(..., description="Source classification")
+    claim_type: str = Field(..., description="Claim type classification (assertion or hypothesis)")
+    subject_scope: str = Field(..., description="Subject scope classification (company, market, or other)")
     sentence_type: str = Field(..., description="Sentence type classification")
-    source_confidence: float = Field(..., description="Confidence score for source classification (0.0-1.0)")
+    content_relevance: str = Field(..., description="Content relevance classification (company_relevant or template_boilerplate)")
+    claim_type_confidence: float = Field(..., description="Confidence score for claim type classification (0.0-1.0)")
+    subject_scope_confidence: float = Field(..., description="Confidence score for subject scope classification (0.0-1.0)")
     sentence_type_confidence: float = Field(..., description="Confidence score for sentence type classification (0.0-1.0)")
+    content_relevance_confidence: float = Field(..., description="Confidence score for content relevance classification (0.0-1.0)")
     evidence: List[str] = Field(default_factory=list, description="Evidence texts from KB")
     evaluation: EvaluationLabel = Field(..., description="Evaluation label")
     reason: str = Field(..., description="Explanation for the evaluation")
@@ -58,10 +62,14 @@ class SentenceEvaluation(BaseModel):
         return {
             "sentence": self.sentence,
             "section": self.section,
-            "source": self.source,
+            "claim_type": self.claim_type,
+            "subject_scope": self.subject_scope,
             "sentence_type": self.sentence_type,
-            "source_confidence": self.source_confidence,
+            "content_relevance": self.content_relevance,
+            "claim_type_confidence": self.claim_type_confidence,
+            "subject_scope_confidence": self.subject_scope_confidence,
             "sentence_type_confidence": self.sentence_type_confidence,
+            "content_relevance_confidence": self.content_relevance_confidence,
             "evidence": self.evidence,
             "evaluation": eval_value,
             "reason": self.reason,

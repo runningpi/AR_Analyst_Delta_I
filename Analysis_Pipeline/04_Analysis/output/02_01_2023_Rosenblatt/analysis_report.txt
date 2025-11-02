@@ -4,45 +4,448 @@ AR ANALYST DELTA I - EVALUATION REPORT
 
 OVERALL STATISTICS
 --------------------------------------------------------------------------------
-Total Sentences: 7
+Total Sentences (all): 353
+Total Sentences (company_relevant): 353
 
-COVERAGE SUMMARY
+COVERAGE SUMMARY (Company Relevant Only)
 --------------------------------------------------------------------------------
-Covered: 3 (42.9%)
-Not Covered: 4 (57.1%)
-Contradicted: 0 (0.0%)
+Total Sentences: 353
+Covered: 134 (38.0%)
+Not Covered: 210 (59.5%)
+Contradicted: 9 (2.5%)
 
 Breakdown:
-  - Supported: 2 (28.6%)
-  - Partially Supported: 1 (14.3%)
+  - Supported: 74 (21.0%)
+  - Partially Supported: 60 (17.0%)
   - Not Supported: 0 (0.0%)
-  - Contradicted: 0 (0.0%)
-  - No Evidence: 4 (57.1%)
+  - Contradicted: 9 (2.5%)
+  - No Evidence: 210 (59.5%)
 
-BY SOURCE TYPE
+COVERAGE BY SOURCE TYPE (Company Relevant Only)
 --------------------------------------------------------------------------------
-  - primary: 5 (71.4%)
-  - secondary: 2 (28.6%)
+
+PRIMARY:
+  Total Sentences: 218
+  Covered: 86 (39.4%)
+  Not Covered: 123 (56.4%)
+  Contradicted: 9 (4.1%)
+  Breakdown:
+    - Supported: 53 (24.3%)
+    - Partially Supported: 33 (15.1%)
+    - Not Supported: 0 (0.0%)
+    - Contradicted: 9 (4.1%)
+    - No Evidence: 123 (56.4%)
+
+SECONDARY:
+  Total Sentences: 107
+  Covered: 38 (35.5%)
+  Not Covered: 69 (64.5%)
+  Contradicted: 0 (0.0%)
+  Breakdown:
+    - Supported: 17 (15.9%)
+    - Partially Supported: 21 (19.6%)
+    - Not Supported: 0 (0.0%)
+    - Contradicted: 0 (0.0%)
+    - No Evidence: 69 (64.5%)
+
+TERTIARY_INTERPRETIVE:
+  Total Sentences: 21
+  Covered: 9 (42.9%)
+  Not Covered: 12 (57.1%)
+  Contradicted: 0 (0.0%)
+  Breakdown:
+    - Supported: 3 (14.3%)
+    - Partially Supported: 6 (28.6%)
+    - Not Supported: 0 (0.0%)
+    - Contradicted: 0 (0.0%)
+    - No Evidence: 12 (57.1%)
+
+COVERAGE BY SECTION AND SOURCE (Company Relevant Only)
+--------------------------------------------------------------------------------
+
+ARGUS RATING: BUY:
+  Total Sentences: 11
+  Covered: 5 (45.5%)
+  Not Covered: 5 (45.5%)
+  Contradicted: 1 (9.1%)
+  Source Distribution:
+    - primary: 6 (54.5%)
+    - secondary: 3 (27.3%)
+    - tertiary_interpretive: 2 (18.2%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 6
+      Covered: 3 (50.0%)
+      Contradicted: 1 (16.7%)
+    SECONDARY:
+      Total: 3
+      Covered: 1 (33.3%)
+      Contradicted: 0 (0.0%)
+    TERTIARY_INTERPRETIVE:
+      Total: 2
+      Covered: 1 (50.0%)
+      Contradicted: 0 (0.0%)
+
+About Argus:
+  Total Sentences: 9
+  Covered: 0 (0.0%)
+  Not Covered: 9 (100.0%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 9 (100.0%)
+    - secondary: 0 (0.0%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 9
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+Analyst's Notes:
+  Total Sentences: 2
+  Covered: 0 (0.0%)
+  Not Covered: 2 (100.0%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 2 (100.0%)
+    - secondary: 0 (0.0%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 2
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+Analyst's Notes...Continued:
+  Total Sentences: 52
+  Covered: 36 (69.2%)
+  Not Covered: 15 (28.8%)
+  Contradicted: 1 (1.9%)
+  Source Distribution:
+    - primary: 29 (55.8%)
+    - secondary: 14 (26.9%)
+    - tertiary_interpretive: 9 (17.3%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 29
+      Covered: 22 (75.9%)
+      Contradicted: 1 (3.4%)
+    SECONDARY:
+      Total: 14
+      Covered: 10 (71.4%)
+      Contradicted: 0 (0.0%)
+    TERTIARY_INTERPRETIVE:
+      Total: 9
+      Covered: 4 (44.4%)
+      Contradicted: 0 (0.0%)
+
+Argus Recommendations:
+  Total Sentences: 5
+  Covered: 0 (0.0%)
+  Not Covered: 5 (100.0%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 2 (40.0%)
+    - secondary: 3 (60.0%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 2
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 3
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+Argus Research Disclaimer:
+  Total Sentences: 28
+  Covered: 1 (3.6%)
+  Not Covered: 27 (96.4%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 28 (100.0%)
+    - secondary: 0 (0.0%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 28
+      Covered: 1 (3.6%)
+      Contradicted: 0 (0.0%)
+
+COMPANY DESCRIPTION:
+  Total Sentences: 4
+  Covered: 3 (75.0%)
+  Not Covered: 1 (25.0%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 2 (50.0%)
+    - secondary: 1 (25.0%)
+    - tertiary_interpretive: 1 (25.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 2
+      Covered: 1 (50.0%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 1
+      Covered: 1 (100.0%)
+      Contradicted: 0 (0.0%)
+    TERTIARY_INTERPRETIVE:
+      Total: 1
+      Covered: 1 (100.0%)
+      Contradicted: 0 (0.0%)
+
+EARNINGS & GROWTH ANALYSIS:
+  Total Sentences: 28
+  Covered: 11 (39.3%)
+  Not Covered: 15 (53.6%)
+  Contradicted: 2 (7.1%)
+  Source Distribution:
+    - primary: 24 (85.7%)
+    - secondary: 3 (10.7%)
+    - tertiary_interpretive: 1 (3.6%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 24
+      Covered: 11 (45.8%)
+      Contradicted: 2 (8.3%)
+    SECONDARY:
+      Total: 3
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+    TERTIARY_INTERPRETIVE:
+      Total: 1
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+FINANCIAL STRENGTH & DIVIDEND:
+  Total Sentences: 32
+  Covered: 20 (62.5%)
+  Not Covered: 9 (28.1%)
+  Contradicted: 3 (9.4%)
+  Source Distribution:
+    - primary: 25 (78.1%)
+    - secondary: 5 (15.6%)
+    - tertiary_interpretive: 2 (6.2%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 25
+      Covered: 15 (60.0%)
+      Contradicted: 3 (12.0%)
+    SECONDARY:
+      Total: 5
+      Covered: 4 (80.0%)
+      Contradicted: 0 (0.0%)
+    TERTIARY_INTERPRETIVE:
+      Total: 2
+      Covered: 1 (50.0%)
+      Contradicted: 0 (0.0%)
+
+Financial & Risk Analysis:
+  Total Sentences: 47
+  Covered: 11 (23.4%)
+  Not Covered: 36 (76.6%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 8 (17.0%)
+    - secondary: 39 (83.0%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 8
+      Covered: 2 (25.0%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 39
+      Covered: 9 (23.1%)
+      Contradicted: 0 (0.0%)
+
+INVESTMENT THESIS:
+  Total Sentences: 18
+  Covered: 14 (77.8%)
+  Not Covered: 3 (16.7%)
+  Contradicted: 1 (5.6%)
+  Source Distribution:
+    - primary: 14 (77.8%)
+    - secondary: 1 (5.6%)
+    - tertiary_interpretive: 2 (11.1%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 14
+      Covered: 12 (85.7%)
+      Contradicted: 1 (7.1%)
+    SECONDARY:
+      Total: 1
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+    TERTIARY_INTERPRETIVE:
+      Total: 2
+      Covered: 2 (100.0%)
+      Contradicted: 0 (0.0%)
+
+Key Statistics:
+  Total Sentences: 28
+  Covered: 1 (3.6%)
+  Not Covered: 27 (96.4%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 26 (92.9%)
+    - secondary: 2 (7.1%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 26
+      Covered: 1 (3.8%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 2
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+MANAGEMENT & RISKS:
+  Total Sentences: 5
+  Covered: 4 (80.0%)
+  Not Covered: 1 (20.0%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 4 (80.0%)
+    - secondary: 1 (20.0%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 4
+      Covered: 4 (100.0%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 1
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+Peer & Industry Analysis:
+  Total Sentences: 22
+  Covered: 11 (50.0%)
+  Not Covered: 10 (45.5%)
+  Contradicted: 1 (4.5%)
+  Source Distribution:
+    - primary: 12 (54.5%)
+    - secondary: 9 (40.9%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 12
+      Covered: 8 (66.7%)
+      Contradicted: 1 (8.3%)
+    SECONDARY:
+      Total: 9
+      Covered: 3 (33.3%)
+      Contradicted: 0 (0.0%)
+
+RECENT DEVELOPMENTS:
+  Total Sentences: 27
+  Covered: 10 (37.0%)
+  Not Covered: 17 (63.0%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 11 (40.7%)
+    - secondary: 16 (59.3%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 11
+      Covered: 6 (54.5%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 16
+      Covered: 4 (25.0%)
+      Contradicted: 0 (0.0%)
+
+THE ARGUS RESEARCH RATING SYSTEM:
+  Total Sentences: 8
+  Covered: 0 (0.0%)
+  Not Covered: 8 (100.0%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 5 (62.5%)
+    - secondary: 3 (37.5%)
+    - tertiary_interpretive: 0 (0.0%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 5
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 3
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+VALUATION:
+  Total Sentences: 22
+  Covered: 6 (27.3%)
+  Not Covered: 16 (72.7%)
+  Contradicted: 0 (0.0%)
+  Source Distribution:
+    - primary: 11 (50.0%)
+    - secondary: 7 (31.8%)
+    - tertiary_interpretive: 4 (18.2%)
+  Coverage by Source Type:
+    PRIMARY:
+      Total: 11
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+    SECONDARY:
+      Total: 7
+      Covered: 6 (85.7%)
+      Contradicted: 0 (0.0%)
+    TERTIARY_INTERPRETIVE:
+      Total: 4
+      Covered: 0 (0.0%)
+      Contradicted: 0 (0.0%)
+
+SOURCE TYPE DISTRIBUTION
+--------------------------------------------------------------------------------
+  - primary: 218 (61.8%)
+  - secondary: 107 (30.3%)
+  - tertiary_interpretive: 21 (5.9%)
+  - other: 6 (1.7%)
+  - template_boilerplate: 1 (0.3%)
 
 BY SENTENCE TYPE
 --------------------------------------------------------------------------------
-  - quantitative: 4 (57.1%)
-  - qualitative: 3 (42.9%)
+  - quantitative: 183 (51.8%)
+  - qualitative: 170 (48.2%)
 
 CONFIDENCE STATISTICS
 --------------------------------------------------------------------------------
 Source Classification Confidence:
-  - Mean: 0.871
-  - Std Dev: 0.049
-  - Range: 0.800 - 0.900
+  - Mean: 0.862
+  - Std Dev: 0.059
+  - Range: 0.600 - 0.900
 
 Sentence Type Classification Confidence:
-  - Mean: 0.886
-  - Std Dev: 0.038
-  - Range: 0.800 - 0.900
+  - Mean: 0.865
+  - Std Dev: 0.050
+  - Range: 0.700 - 0.900
 
 BY SECTION
 --------------------------------------------------------------------------------
-  - INVESTMENT THESIS: 7 (100.0%)
+  - Analyst's Notes...Continued: 52 (14.7%)
+  - Financial & Risk Analysis: 47 (13.3%)
+  - FINANCIAL STRENGTH & DIVIDEND: 32 (9.1%)
+  - Key Statistics: 28 (7.9%)
+  - Argus Research Disclaimer: 28 (7.9%)
+  - EARNINGS & GROWTH ANALYSIS: 28 (7.9%)
+  - RECENT DEVELOPMENTS: 27 (7.6%)
+  - Peer & Industry Analysis: 22 (6.2%)
+  - VALUATION: 22 (6.2%)
+  - INVESTMENT THESIS: 18 (5.1%)
+  - ARGUS RATING: BUY: 11 (3.1%)
+  - About Argus: 9 (2.5%)
+  - THE ARGUS RESEARCH RATING SYSTEM: 8 (2.3%)
+  - Argus Recommendations: 5 (1.4%)
+  - Morningstar Disclaimer: 5 (1.4%)
+  - MANAGEMENT & RISKS: 5 (1.4%)
+  - COMPANY DESCRIPTION: 4 (1.1%)
+  - Analyst's Notes: 2 (0.6%)
 
 ================================================================================
