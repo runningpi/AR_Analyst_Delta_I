@@ -30,12 +30,18 @@ The pipeline consists of 5 stages, each with its own caching mechanism:
 │ 1. OCR & Text Extraction (Decomposition_AR)                     │
 │    └─ Extract text from PDF analyst reports using Docling       │
 ├─────────────────────────────────────────────────────────────────┤
-│ 2. Sentence Classification (Decomposition_AR)                   │
-│    └─ LLM categorizes sentences: corporate_info, market_info,   │
-│       analyst_interpretation, other                             │
+│ 2. Snippet Extraction & Classification (Decomposition_AR)      │
+│    └─ Extract knowledge snippets from sentences                 │
+│    └─ LLM classifies each snippet:                              │
+│       • CLAIM TYPE: assertion/hypothesis/other                  │
+│       • SUBJECT SCOPE: company/market/other                    │
+│       • CONTENT TYPE: quantitative/qualitative/other           │
+│       • CONTENT RELEVANCE: company_relevant/template_boilerplate/other│
 ├─────────────────────────────────────────────────────────────────┤
 │ 3. Knowledge Base Matching (RAG_and_knowledgebase)             │
+│    └─ Filter: Only process company_relevant snippets           │
 │    └─ DS-RAG queries company documents for supporting evidence  │
+│    └─ Template/boilerplate snippets excluded                   │
 ├─────────────────────────────────────────────────────────────────┤
 │ 4. LLM Evaluation (Evaluation)                                  │
 │    └─ GPT-4 evaluates: Supported, Partially Supported,         │
@@ -71,7 +77,7 @@ Analysis_Pipeline/
 │   │   ├── classification_service.py
 │   │   ├── text_mangement_utils.py
 │   │   ├── ocr_content/[PDF_NAME]/      # 📦 Cached OCR outputs
-│   │   └── output/classified_sentences/[PDF_NAME]/  # 📦 Cached classifications
+│   │   └── output/classified_snippets/[PDF_NAME]/  # 📦 Cached classifications
 │   │
 │   ├── RAG_and_knowledgebase/           # Stage 3: KB Matching
 │   │   ├── DS_RAG_utils.py
@@ -209,20 +215,37 @@ All outputs are organized by document name in stage-specific directories:
 - **`analysis_report.txt`**: Human-readable comprehensive report
 - **`statistics.json`**: Detailed statistics and metrics
 - **`coverage_summary.json`**: Coverage percentages and breakdowns
+  - Coverage by claim_type (assertion/hypothesis)
+  - Coverage by subject_scope (company/market/other)
+  - Coverage by section and classification
 - **`metadata.json`**: Analysis timestamp and info
 
 ### Example Output
 
 ```
-Total Sentences: 151
+Total Sentences (all): 180
+  - Company Relevant: 151
+  - Template/Boilerplate (excluded): 29
+
+Total Sentences (company_relevant only): 151
 Covered: 42 (27.8%)          ← Supported by company documents
 Not Covered: 107 (70.9%)     ← Novel analyst insights! (ΔI)
 Contradicted: 2 (1.3%)       ← Contradicts company statements
+
+Coverage by Claim Type:
+  - Assertions: 85% covered
+  - Hypotheses: 15% covered
+
+Coverage by Subject Scope:
+  - Company: 45% covered
+  - Market: 12% covered
 ```
 
 **Interpretation:**
-- 70.9% of analyst claims are NOT found in company documents = **high information delta**
-- These are potential novel insights that analysts are contributing
+- 70.9% of company_relevant analyst claims are NOT found in company documents = **high information delta**
+- Template/boilerplate content (29 snippets) is excluded from analysis
+- Assertions have higher coverage rates than hypotheses (as expected)
+- Company-specific claims have higher coverage than market claims
 
 ## ⚙️ Configuration Options
 
@@ -246,10 +269,32 @@ You can modify `config.py` to adjust:
 
 ### Models Used
 
-- **Classification**: GPT-4o-mini (categorizes sentences)
+- **Classification**: GPT-4o-mini (extracts snippets and classifies into 4 dimensions)
 - **Evaluation**: GPT-4o-mini (assesses evidence support)
 - **Embeddings**: OpenAI text-embedding-3-small (via DS-RAG)
 - **Reranking**: Cohere Rerank (optional, improves retrieval)
+
+### Classification Categories
+
+Each snippet is classified along 4 dimensions:
+
+1. **CLAIM TYPE**: assertion / hypothesis / other
+   - **Assertion**: Verifiable statement about current/past facts
+   - **Hypothesis**: Non-verifiable statement (forecasts, expectations, reasoning)
+
+2. **SUBJECT SCOPE**: company / market / other
+   - **Company**: About specific firm (revenues, products, management)
+   - **Market**: About industry, sector, competitors, demand/supply
+   - **Other**: Macroeconomic factors, geopolitics, unrelated topics
+
+3. **CONTENT TYPE**: quantitative / qualitative / other
+   - **Quantitative**: Includes numbers, percentages, growth rates, margins
+   - **Qualitative**: Descriptive statements, assessments, opinions
+
+4. **CONTENT RELEVANCE**: company_relevant / template_boilerplate / other
+   - **Company Relevant**: Actual analysis of the company being studied
+   - **Template Boilerplate**: Disclaimers, legal notices, analyst company info (excluded from analysis)
+   - **Other**: Unclear relevance classification
 
 ### DS-RAG Integration
 

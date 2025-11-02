@@ -30,22 +30,46 @@
          │
          ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│ PHASE 2: SENTENCE CLASSIFICATION                                     │
+│ PHASE 2: SNIPPET EXTRACTION & CLASSIFICATION                        │
 │                                                                      │
 │  ClassificationService (GPT-4o-mini)                                │
+│  ├─ Extract knowledge snippets from sentences                       │
 │  ├─ Batch processing (10 sentences/batch)                          │
-│  ├─ Classify into:                                                  │
-│  │   • corporate_information                                        │
-│  │   • market_information                                           │
-│  │   • analyst_interpretation                                       │
-│  │   • other                                                        │
-│  └─ JSON response parsing                                           │
+│  ├─ Classify each snippet into 4 categories:                       │
+│  │   1. CLAIM TYPE:                                                 │
+│  │      • assertion (verifiable statement)                         │
+│  │      • hypothesis (non-verifiable statement)                    │
+│  │      • other                                                     │
+│  │   2. SUBJECT SCOPE:                                              │
+│  │      • company (about specific firm)                            │
+│  │      • market (about industry/sector)                            │
+│  │      • other                                                     │
+│  │   3. CONTENT TYPE:                                               │
+│  │      • quantitative (includes numbers)                           │
+│  │      • qualitative (descriptive)                                  │
+│  │      • other                                                     │
+│  │   4. CONTENT RELEVANCE:                                          │
+│  │      • company_relevant                                          │
+│  │      • template_boilerplate                                      │
+│  │      • other                                                     │
+│  └─ JSON response parsing with confidence scores                   │
 │                                                                      │
-│  Output: { "overview": [{"sentence": "...", "source": "..."}, ...] }│
+│  Output: {                                                           │
+│    "overview": [                                                     │
+│      {                                                               │
+│        "snippet": "...",                                            │
+│        "claim_type": "assertion",                                   │
+│        "subject_scope": "company",                                 │
+│        "sentence_type": "quantitative",                             │
+│        "content_relevance": "company_relevant",                     │
+│        ...                                                           │
+│      }, ...                                                          │
+│    ]                                                                 │
+│  }                                                                   │
 └────────┬─────────────────────────────────────────────────────────────┘
          │
          ▼
-         │  classified_sentences.json
+         │  classified_snippets.json
          │
          ▼
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -83,20 +107,24 @@
 │ PHASE 4: RAG QUERY & MATCHING                                        │
 │                                                                      │
 │  SentenceMatcher                                                     │
-│  ├─ For each sentence:                                              │
-│  │   ├─ Query KB with sentence                                      │
+│  ├─ Filter: Only process company_relevant snippets                 │
+│  │   └─ Exclude template_boilerplate snippets                       │
+│  ├─ For each company_relevant snippet:                             │
+│  │   ├─ Query KB with snippet text                                  │
 │  │   ├─ Retrieve top-5 relevant segments                           │
 │  │   └─ Extract evidence text                                       │
 │  └─ Progress tracking                                                │
 │                                                                      │
 │  Flow:                                                               │
-│  Sentence ──► [Query KB] ──► Top-5 Segments ──► Evidence Texts     │
+│  Snippets ──► [Filter company_relevant] ──► [Query KB] ──►          │
+│    Top-5 Segments ──► Evidence Texts                                 │
 │                                                                      │
 │  Output: {                                                           │
 │    "overview": [                                                     │
 │      {                                                               │
-│        "sentence": "...",                                           │
-│        "source": "corporate_information",                           │
+│        "snippet": "...",                                            │
+│        "claim_type": "assertion",                                   │
+│        "subject_scope": "company",                                 │
 │        "evidence": ["evidence1", "evidence2", ...]                  │
 │      }, ...                                                          │
 │    ]                                                                 │
@@ -129,7 +157,8 @@
 │    "overview": [                                                     │
 │      {                                                               │
 │        "sentence": "...",                                           │
-│        "source": "...",                                             │
+│        "claim_type": "assertion",                                   │
+│        "subject_scope": "company",                                 │
 │        "evidence": [...],                                           │
 │        "evaluation": "Supported",                                   │
 │        "reason": "The KB explicitly states..."                      │
@@ -147,24 +176,29 @@
 │                                                                      │
 │  EvaluationAnalyzer                                                  │
 │  ├─ Overall Statistics                                              │
-│  │   ├─ Total sentences                                             │
+│  │   ├─ Total sentences (company_relevant only)                    │
+│  │   ├─ Total template_boilerplate (excluded)                       │
 │  │   ├─ By evaluation label                                         │
-│  │   ├─ By source type                                              │
+│  │   ├─ By claim_type (assertion/hypothesis/other)                 │
+│  │   ├─ By subject_scope (company/market/other)                    │
 │  │   └─ By section                                                  │
 │  │                                                                   │
-│  ├─ Coverage Analysis                                                │
+│  ├─ Coverage Analysis (company_relevant only)                       │
 │  │   ├─ Covered (Supported + Partially Supported)                  │
 │  │   ├─ Not Covered (Not Supported + No Evidence)                  │
 │  │   └─ Contradicted                                                │
 │  │                                                                   │
-│  ├─ Breakdowns                                                       │
-│  │   ├─ By section (crosstab)                                       │
-│  │   └─ By source type (crosstab)                                   │
+│  ├─ Coverage Breakdowns                                              │
+│  │   ├─ By claim_type (assertion vs hypothesis)                    │
+│  │   ├─ By subject_scope (company vs market vs other)              │
+│  │   ├─ By section and claim_type/subject_scope                    │
+│  │   └─ By section (crosstab)                                       │
 │  │                                                                   │
 │  └─ Search & Filter                                                  │
 │      ├─ By section                                                   │
 │      ├─ By evaluation label                                          │
-│      └─ By source type                                               │
+│      ├─ By claim_type                                                │
+│      └─ By subject_scope                                             │
 │                                                                      │
 │  ReportGenerator                                                     │
 │  └─ Generate human-readable text report                             │
@@ -234,13 +268,36 @@ Input Text
     ↓
 Sentences (List[str])
     ↓
-Classified Sentences (List[{sentence, source}])
+Classified Snippets (List[{
+    snippet,
+    claim_type,      // assertion/hypothesis/other
+    subject_scope,   // company/market/other
+    sentence_type,   // quantitative/qualitative/other
+    content_relevance  // company_relevant/template_boilerplate/other
+}])
     ↓
-Query Results (List[{sentence, source, evidence}])
+Filter: Only company_relevant snippets
     ↓
-Evaluations (List[{sentence, source, evidence, evaluation, reason}])
+Query Results (List[{
+    snippet,
+    claim_type,
+    subject_scope,
+    evidence
+}])
+    ↓
+Evaluations (List[{
+    snippet,
+    claim_type,
+    subject_scope,
+    evidence,
+    evaluation,
+    reason
+}])
     ↓
 Analysis (Statistics, Reports, Insights)
+    ├─ Coverage by claim_type
+    ├─ Coverage by subject_scope
+    └─ Coverage by section and classification
 ```
 
 ## Module Dependencies
@@ -279,9 +336,16 @@ Performance Indicators:
 ├─ Contradiction Rate: % of contradicted sentences
 └─ Evidence Quality: Average evidence relevance
 
-By Source Type:
-├─ Corporate Information: Usually high support rate
-├─ Market Information: Moderate support rate
-└─ Analyst Interpretation: Lower support rate (expected)
+By Classification:
+├─ Claim Type:
+│   ├─ Assertions: Usually high support rate (verifiable claims)
+│   └─ Hypotheses: Lower support rate (forecasts, expectations)
+├─ Subject Scope:
+│   ├─ Company: Usually high support rate (firm-specific data)
+│   ├─ Market: Moderate support rate (industry data)
+│   └─ Other: Varies (macroeconomic factors)
+└─ Content Relevance:
+    ├─ Company Relevant: Included in analysis
+    └─ Template Boilerplate: Excluded from analysis
 ```
 
