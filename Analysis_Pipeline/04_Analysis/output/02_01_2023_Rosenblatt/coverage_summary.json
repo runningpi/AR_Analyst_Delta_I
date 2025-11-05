@@ -1,0 +1,925 @@
+{
+  "total_sentences": 263,
+  "total_sentences_all": 326,
+  "total_template_boilerplate": 28,
+  "covered": 118,
+  "covered_percentage": 44.9,
+  "not_covered": 140,
+  "not_covered_percentage": 53.2,
+  "contradicted": 5,
+  "contradicted_percentage": 1.9,
+  "breakdown": {
+    "Supported": 62,
+    "Partially Supported": 56,
+    "Not Supported": 0,
+    "Contradicted": 5,
+    "No Evidence": 140
+  },
+  "coverage_by_claim_type": {
+    "assertion": {
+      "total_sentences": 240,
+      "covered": 106,
+      "covered_percentage": 44.2,
+      "not_covered": 129,
+      "not_covered_percentage": 53.8,
+      "contradicted": 5,
+      "contradicted_percentage": 2.1,
+      "breakdown": {
+        "Supported": 56,
+        "Partially Supported": 50,
+        "Not Supported": 0,
+        "Contradicted": 5,
+        "No Evidence": 129
+      }
+    },
+    "hypothesis": {
+      "total_sentences": 22,
+      "covered": 11,
+      "covered_percentage": 50.0,
+      "not_covered": 11,
+      "not_covered_percentage": 50.0,
+      "contradicted": 0,
+      "contradicted_percentage": 0.0,
+      "breakdown": {
+        "Supported": 6,
+        "Partially Supported": 5,
+        "Not Supported": 0,
+        "Contradicted": 0,
+        "No Evidence": 11
+      }
+    }
+  },
+  "coverage_by_subject_scope": {
+    "company": {
+      "total_sentences": 250,
+      "covered": 114,
+      "covered_percentage": 45.6,
+      "not_covered": 131,
+      "not_covered_percentage": 52.4,
+      "contradicted": 5,
+      "contradicted_percentage": 2.0,
+      "breakdown": {
+        "Supported": 60,
+        "Partially Supported": 54,
+        "Not Supported": 0,
+        "Contradicted": 5,
+        "No Evidence": 131
+      }
+    },
+    "market": {
+      "total_sentences": 13,
+      "covered": 4,
+      "covered_percentage": 30.8,
+      "not_covered": 9,
+      "not_covered_percentage": 69.2,
+      "contradicted": 0,
+      "contradicted_percentage": 0.0,
+      "breakdown": {
+        "Supported": 2,
+        "Partially Supported": 2,
+        "Not Supported": 0,
+        "Contradicted": 0,
+        "No Evidence": 9
+      }
+    }
+  },
+  "coverage_by_section_and_claim_subject": {
+    "ARGUS RATING: BUY": {
+      "claim_assertion": {
+        "total_sentences": 6,
+        "covered": 4,
+        "covered_percentage": 66.7,
+        "not_covered": 2,
+        "not_covered_percentage": 33.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 5,
+        "covered": 4,
+        "covered_percentage": 80.0,
+        "not_covered": 1,
+        "not_covered_percentage": 20.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_market": {
+        "total_sentences": 1,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 1,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 6,
+        "covered": 4,
+        "covered_percentage": 66.7,
+        "not_covered": 2,
+        "not_covered_percentage": 33.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 6,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 5,
+          "market": 1,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 1,
+          "Partially Supported": 3,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 2
+        }
+      }
+    },
+    "INVESTMENT THESIS": {
+      "claim_assertion": {
+        "total_sentences": 15,
+        "covered": 11,
+        "covered_percentage": 73.3,
+        "not_covered": 3,
+        "not_covered_percentage": 20.0,
+        "contradicted": 1,
+        "contradicted_percentage": 6.7
+      },
+      "subject_company": {
+        "total_sentences": 15,
+        "covered": 11,
+        "covered_percentage": 73.3,
+        "not_covered": 3,
+        "not_covered_percentage": 20.0,
+        "contradicted": 1,
+        "contradicted_percentage": 6.7
+      },
+      "_overall": {
+        "total_sentences": 15,
+        "covered": 11,
+        "covered_percentage": 73.3,
+        "not_covered": 3,
+        "not_covered_percentage": 20.0,
+        "contradicted": 1,
+        "contradicted_percentage": 6.7,
+        "claim_type_distribution": {
+          "assertion": 15,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 15,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 5,
+          "Partially Supported": 6,
+          "Not Supported": 0,
+          "Contradicted": 1,
+          "No Evidence": 3
+        }
+      }
+    },
+    "Argus Recommendations": {
+      "claim_assertion": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 2,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 2,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 0,
+          "Partially Supported": 0,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 2
+        }
+      }
+    },
+    "Key Statistics": {
+      "claim_assertion": {
+        "total_sentences": 22,
+        "covered": 1,
+        "covered_percentage": 4.5,
+        "not_covered": 21,
+        "not_covered_percentage": 95.5,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "claim_hypothesis": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 21,
+        "covered": 1,
+        "covered_percentage": 4.8,
+        "not_covered": 20,
+        "not_covered_percentage": 95.2,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_market": {
+        "total_sentences": 3,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 3,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 24,
+        "covered": 1,
+        "covered_percentage": 4.2,
+        "not_covered": 23,
+        "not_covered_percentage": 95.8,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 22,
+          "hypothesis": 2
+        },
+        "subject_scope_distribution": {
+          "company": 21,
+          "market": 3,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 1,
+          "Partially Supported": 0,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 23
+        }
+      }
+    },
+    "Analyst's Notes...Continued": {
+      "claim_assertion": {
+        "total_sentences": 30,
+        "covered": 26,
+        "covered_percentage": 86.7,
+        "not_covered": 4,
+        "not_covered_percentage": 13.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "claim_hypothesis": {
+        "total_sentences": 8,
+        "covered": 6,
+        "covered_percentage": 75.0,
+        "not_covered": 2,
+        "not_covered_percentage": 25.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 35,
+        "covered": 30,
+        "covered_percentage": 85.7,
+        "not_covered": 5,
+        "not_covered_percentage": 14.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_market": {
+        "total_sentences": 3,
+        "covered": 2,
+        "covered_percentage": 66.7,
+        "not_covered": 1,
+        "not_covered_percentage": 33.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 38,
+        "covered": 32,
+        "covered_percentage": 84.2,
+        "not_covered": 6,
+        "not_covered_percentage": 15.8,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 30,
+          "hypothesis": 8
+        },
+        "subject_scope_distribution": {
+          "company": 35,
+          "market": 3,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 18,
+          "Partially Supported": 14,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 6
+        }
+      }
+    },
+    "RECENT DEVELOPMENTS": {
+      "claim_assertion": {
+        "total_sentences": 28,
+        "covered": 13,
+        "covered_percentage": 46.4,
+        "not_covered": 14,
+        "not_covered_percentage": 50.0,
+        "contradicted": 1,
+        "contradicted_percentage": 3.6
+      },
+      "subject_company": {
+        "total_sentences": 28,
+        "covered": 13,
+        "covered_percentage": 46.4,
+        "not_covered": 14,
+        "not_covered_percentage": 50.0,
+        "contradicted": 1,
+        "contradicted_percentage": 3.6
+      },
+      "_overall": {
+        "total_sentences": 28,
+        "covered": 13,
+        "covered_percentage": 46.4,
+        "not_covered": 14,
+        "not_covered_percentage": 50.0,
+        "contradicted": 1,
+        "contradicted_percentage": 3.6,
+        "claim_type_distribution": {
+          "assertion": 28,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 28,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 7,
+          "Partially Supported": 6,
+          "Not Supported": 0,
+          "Contradicted": 1,
+          "No Evidence": 14
+        }
+      }
+    },
+    "Financial & Risk Analysis": {
+      "claim_assertion": {
+        "total_sentences": 39,
+        "covered": 9,
+        "covered_percentage": 23.1,
+        "not_covered": 30,
+        "not_covered_percentage": 76.9,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 39,
+        "covered": 9,
+        "covered_percentage": 23.1,
+        "not_covered": 30,
+        "not_covered_percentage": 76.9,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 39,
+        "covered": 9,
+        "covered_percentage": 23.1,
+        "not_covered": 30,
+        "not_covered_percentage": 76.9,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 39,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 39,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 3,
+          "Partially Supported": 6,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 30
+        }
+      }
+    },
+    "Peer & Industry Analysis": {
+      "claim_assertion": {
+        "total_sentences": 7,
+        "covered": 6,
+        "covered_percentage": 85.7,
+        "not_covered": 1,
+        "not_covered_percentage": 14.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "claim_hypothesis": {
+        "total_sentences": 1,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 1,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 8,
+        "covered": 6,
+        "covered_percentage": 75.0,
+        "not_covered": 2,
+        "not_covered_percentage": 25.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 8,
+        "covered": 6,
+        "covered_percentage": 75.0,
+        "not_covered": 2,
+        "not_covered_percentage": 25.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 7,
+          "hypothesis": 1
+        },
+        "subject_scope_distribution": {
+          "company": 8,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 5,
+          "Partially Supported": 1,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 2
+        }
+      }
+    },
+    "EARNINGS & GROWTH ANALYSIS": {
+      "claim_assertion": {
+        "total_sentences": 13,
+        "covered": 5,
+        "covered_percentage": 38.5,
+        "not_covered": 7,
+        "not_covered_percentage": 53.8,
+        "contradicted": 1,
+        "contradicted_percentage": 7.7
+      },
+      "claim_hypothesis": {
+        "total_sentences": 3,
+        "covered": 2,
+        "covered_percentage": 66.7,
+        "not_covered": 1,
+        "not_covered_percentage": 33.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 16,
+        "covered": 7,
+        "covered_percentage": 43.8,
+        "not_covered": 8,
+        "not_covered_percentage": 50.0,
+        "contradicted": 1,
+        "contradicted_percentage": 6.2
+      },
+      "_overall": {
+        "total_sentences": 16,
+        "covered": 7,
+        "covered_percentage": 43.8,
+        "not_covered": 8,
+        "not_covered_percentage": 50.0,
+        "contradicted": 1,
+        "contradicted_percentage": 6.2,
+        "claim_type_distribution": {
+          "assertion": 13,
+          "hypothesis": 3
+        },
+        "subject_scope_distribution": {
+          "company": 16,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 4,
+          "Partially Supported": 3,
+          "Not Supported": 0,
+          "Contradicted": 1,
+          "No Evidence": 8
+        }
+      }
+    },
+    "FINANCIAL STRENGTH & DIVIDEND": {
+      "claim_assertion": {
+        "total_sentences": 29,
+        "covered": 20,
+        "covered_percentage": 69.0,
+        "not_covered": 8,
+        "not_covered_percentage": 27.6,
+        "contradicted": 1,
+        "contradicted_percentage": 3.4
+      },
+      "claim_hypothesis": {
+        "total_sentences": 3,
+        "covered": 2,
+        "covered_percentage": 66.7,
+        "not_covered": 1,
+        "not_covered_percentage": 33.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 33,
+        "covered": 23,
+        "covered_percentage": 69.7,
+        "not_covered": 9,
+        "not_covered_percentage": 27.3,
+        "contradicted": 1,
+        "contradicted_percentage": 3.0
+      },
+      "_overall": {
+        "total_sentences": 33,
+        "covered": 23,
+        "covered_percentage": 69.7,
+        "not_covered": 9,
+        "not_covered_percentage": 27.3,
+        "contradicted": 1,
+        "contradicted_percentage": 3.0,
+        "claim_type_distribution": {
+          "assertion": 29,
+          "hypothesis": 3
+        },
+        "subject_scope_distribution": {
+          "company": 33,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 10,
+          "Partially Supported": 13,
+          "Not Supported": 0,
+          "Contradicted": 1,
+          "No Evidence": 9
+        }
+      }
+    },
+    "MANAGEMENT & RISKS": {
+      "claim_assertion": {
+        "total_sentences": 6,
+        "covered": 4,
+        "covered_percentage": 66.7,
+        "not_covered": 1,
+        "not_covered_percentage": 16.7,
+        "contradicted": 1,
+        "contradicted_percentage": 16.7
+      },
+      "subject_company": {
+        "total_sentences": 6,
+        "covered": 4,
+        "covered_percentage": 66.7,
+        "not_covered": 1,
+        "not_covered_percentage": 16.7,
+        "contradicted": 1,
+        "contradicted_percentage": 16.7
+      },
+      "_overall": {
+        "total_sentences": 6,
+        "covered": 4,
+        "covered_percentage": 66.7,
+        "not_covered": 1,
+        "not_covered_percentage": 16.7,
+        "contradicted": 1,
+        "contradicted_percentage": 16.7,
+        "claim_type_distribution": {
+          "assertion": 6,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 6,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 3,
+          "Partially Supported": 1,
+          "Not Supported": 0,
+          "Contradicted": 1,
+          "No Evidence": 1
+        }
+      }
+    },
+    "COMPANY DESCRIPTION": {
+      "claim_assertion": {
+        "total_sentences": 5,
+        "covered": 4,
+        "covered_percentage": 80.0,
+        "not_covered": 1,
+        "not_covered_percentage": 20.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 2,
+        "covered": 2,
+        "covered_percentage": 100.0,
+        "not_covered": 0,
+        "not_covered_percentage": 0.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_market": {
+        "total_sentences": 3,
+        "covered": 2,
+        "covered_percentage": 66.7,
+        "not_covered": 1,
+        "not_covered_percentage": 33.3,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 5,
+        "covered": 4,
+        "covered_percentage": 80.0,
+        "not_covered": 1,
+        "not_covered_percentage": 20.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 5,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 2,
+          "market": 3,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 2,
+          "Partially Supported": 2,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 1
+        }
+      }
+    },
+    "VALUATION": {
+      "claim_assertion": {
+        "total_sentences": 16,
+        "covered": 3,
+        "covered_percentage": 18.8,
+        "not_covered": 13,
+        "not_covered_percentage": 81.2,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "claim_hypothesis": {
+        "total_sentences": 4,
+        "covered": 1,
+        "covered_percentage": 25.0,
+        "not_covered": 3,
+        "not_covered_percentage": 75.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 18,
+        "covered": 4,
+        "covered_percentage": 22.2,
+        "not_covered": 14,
+        "not_covered_percentage": 77.8,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_market": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 20,
+        "covered": 4,
+        "covered_percentage": 20.0,
+        "not_covered": 16,
+        "not_covered_percentage": 80.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 16,
+          "hypothesis": 4
+        },
+        "subject_scope_distribution": {
+          "company": 18,
+          "market": 2,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 3,
+          "Partially Supported": 1,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 16
+        }
+      }
+    },
+    "About Argus": {
+      "claim_assertion": {
+        "total_sentences": 9,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 9,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "claim_hypothesis": {
+        "total_sentences": 1,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 1,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 9,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 9,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_market": {
+        "total_sentences": 1,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 1,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 10,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 10,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 9,
+          "hypothesis": 1
+        },
+        "subject_scope_distribution": {
+          "company": 9,
+          "market": 1,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 0,
+          "Partially Supported": 0,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 10
+        }
+      }
+    },
+    "THE ARGUS RESEARCH RATING SYSTEM": {
+      "claim_assertion": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 2,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 2,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 2,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 2,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 0,
+          "Partially Supported": 0,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 2
+        }
+      }
+    },
+    "Argus Research Disclaimer": {
+      "claim_assertion": {
+        "total_sentences": 11,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 11,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "subject_company": {
+        "total_sentences": 11,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 11,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0
+      },
+      "_overall": {
+        "total_sentences": 11,
+        "covered": 0,
+        "covered_percentage": 0.0,
+        "not_covered": 11,
+        "not_covered_percentage": 100.0,
+        "contradicted": 0,
+        "contradicted_percentage": 0.0,
+        "claim_type_distribution": {
+          "assertion": 11,
+          "hypothesis": 0
+        },
+        "subject_scope_distribution": {
+          "company": 11,
+          "market": 0,
+          "other": 0
+        },
+        "breakdown": {
+          "Supported": 0,
+          "Partially Supported": 0,
+          "Not Supported": 0,
+          "Contradicted": 0,
+          "No Evidence": 11
+        }
+      }
+    }
+  }
+}

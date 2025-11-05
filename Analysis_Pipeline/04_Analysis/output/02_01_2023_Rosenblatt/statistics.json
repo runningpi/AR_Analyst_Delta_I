@@ -1,0 +1,61 @@
+{
+  "total_sentences": 263,
+  "by_evaluation": {
+    "No Evidence": 140,
+    "Supported": 62,
+    "Partially Supported": 56,
+    "Contradicted": 5
+  },
+  "by_claim_type": {
+    "assertion": 240,
+    "hypothesis": 22,
+    "quantitative": 1
+  },
+  "by_subject_scope": {
+    "company": 250,
+    "market": 13
+  },
+  "by_sentence_type": {
+    "quantitative": 115,
+    "other": 87,
+    "qualitative": 61
+  },
+  "by_section": {
+    "Financial & Risk Analysis": 39,
+    "Analyst's Notes...Continued": 38,
+    "FINANCIAL STRENGTH & DIVIDEND": 33,
+    "RECENT DEVELOPMENTS": 28,
+    "Key Statistics": 24,
+    "VALUATION": 20,
+    "EARNINGS & GROWTH ANALYSIS": 16,
+    "INVESTMENT THESIS": 15,
+    "Argus Research Disclaimer": 11,
+    "About Argus": 10,
+    "Peer & Industry Analysis": 8,
+    "ARGUS RATING: BUY": 6,
+    "MANAGEMENT & RISKS": 6,
+    "COMPANY DESCRIPTION": 5,
+    "Argus Recommendations": 2,
+    "THE ARGUS RESEARCH RATING SYSTEM": 2
+  },
+  "confidence_stats": {
+    "claim_type_confidence": {
+      "mean": 0.8874524714828897,
+      "std": 0.037507920583043176,
+      "min": 0.7,
+      "max": 0.9
+    },
+    "subject_scope_confidence": {
+      "mean": 0.8931558935361218,
+      "std": 0.03074647676489562,
+      "min": 0.7,
+      "max": 0.9
+    },
+    "sentence_type_confidence": {
+      "mean": 0.7479087452471483,
+      "std": 0.1792302222194026,
+      "min": 0.5,
+      "max": 0.9
+    }
+  }
+}
