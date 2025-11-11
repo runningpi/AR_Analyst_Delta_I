@@ -40,6 +40,15 @@ class EvaluationAnalyzer:
         
         for section, evals in self.evaluations_dict.items():
             for eval_item in evals:
+                # Normalize delta_analysis to string if it's a dict (from cached evaluations)
+                delta_analysis = eval_item.get("delta_analysis", None)
+                if delta_analysis is not None:
+                    if isinstance(delta_analysis, dict):
+                        import json
+                        delta_analysis = json.dumps(delta_analysis, indent=2)
+                    elif not isinstance(delta_analysis, str):
+                        delta_analysis = str(delta_analysis)
+                
                 rows.append({
                     "section": section,
                     "sentence": eval_item.get("sentence", ""),
@@ -54,7 +63,7 @@ class EvaluationAnalyzer:
                     "evaluation": eval_item.get("evaluation", ""),
                     "reason": eval_item.get("reason", ""),
                     "support_score": float(eval_item.get("support_score", 0.0)),
-                    "delta_analysis": eval_item.get("delta_analysis", None),
+                    "delta_analysis": delta_analysis,
                     "evidence_count": len(eval_item.get("evidence", [])),
                 })
         

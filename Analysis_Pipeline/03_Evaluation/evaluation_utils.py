@@ -197,6 +197,43 @@ This snippet was evaluated as "Partially Supported". Provide a detailed delta an
             parsed = json.loads(raw_response)
             
             delta_analysis = parsed.get("delta_analysis", "Delta analysis not available")
+            
+            # Handle case where delta_analysis is a dictionary (convert to formatted string)
+            if isinstance(delta_analysis, dict):
+                # Format dictionary as a readable string
+                formatted_parts = []
+                if "supported_aspects" in delta_analysis:
+                    supported = delta_analysis["supported_aspects"]
+                    if isinstance(supported, list):
+                        formatted_parts.append(f"Supported aspects: {', '.join(supported)}")
+                    else:
+                        formatted_parts.append(f"Supported aspects: {supported}")
+                
+                if "missing_aspects" in delta_analysis:
+                    missing = delta_analysis["missing_aspects"]
+                    if isinstance(missing, list):
+                        formatted_parts.append(f"Missing aspects: {', '.join(missing)}")
+                    else:
+                        formatted_parts.append(f"Missing aspects: {missing}")
+                
+                if "differences" in delta_analysis:
+                    differences = delta_analysis["differences"]
+                    if isinstance(differences, dict):
+                        diff_str = "; ".join([f"{k}: {v}" for k, v in differences.items()])
+                        formatted_parts.append(f"Differences: {diff_str}")
+                    else:
+                        formatted_parts.append(f"Differences: {differences}")
+                
+                # If no structured fields, convert entire dict to JSON string
+                if not formatted_parts:
+                    delta_analysis = json.dumps(delta_analysis, indent=2)
+                else:
+                    delta_analysis = "\n".join(formatted_parts)
+            
+            # Ensure it's a string
+            if not isinstance(delta_analysis, str):
+                delta_analysis = str(delta_analysis)
+            
             logger.debug(f"Generated delta analysis for Partially Supported item")
             
             return delta_analysis
@@ -260,6 +297,11 @@ This snippet was evaluated as "Partially Supported". Provide a detailed delta an
                     delta_analysis = self.evaluate_partially_supported_delta(
                         sentence, evidence_content, section=section_name
                     )
+                    # Ensure delta_analysis is a string (handle any edge cases)
+                    if isinstance(delta_analysis, dict):
+                        delta_analysis = json.dumps(delta_analysis, indent=2)
+                    elif not isinstance(delta_analysis, str):
+                        delta_analysis = str(delta_analysis)
                     eval_result.delta_analysis = delta_analysis
                 
                 # Extract evidence content strings for SentenceEvaluation model

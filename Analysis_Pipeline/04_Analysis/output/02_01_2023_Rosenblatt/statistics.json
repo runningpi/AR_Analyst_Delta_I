@@ -1,73 +1,74 @@
 {
-  "total_sentences": 263,
+  "total_sentences": 250,
   "by_evaluation": {
-    "No Evidence": 140,
-    "Supported": 62,
-    "Partially Supported": 56,
-    "Contradicted": 5
+    "No Evidence": 102,
+    "Supported": 63,
+    "Partially Supported": 45,
+    "Not Supported": 30,
+    "Contradicted": 10
   },
   "by_claim_type": {
-    "assertion": 240,
-    "hypothesis": 22,
-    "quantitative": 1
+    "assertion": 228,
+    "hypothesis": 21,
+    "claim": 1
   },
   "by_subject_scope": {
-    "company": 250,
-    "market": 13
+    "company": 230,
+    "market": 15,
+    "other": 5
   },
   "by_sentence_type": {
-    "quantitative": 115,
-    "other": 87,
-    "qualitative": 61
+    "quantitative": 121,
+    "qualitative": 114,
+    "other": 15
   },
   "by_section": {
-    "Financial & Risk Analysis": 39,
-    "Analyst's Notes...Continued": 38,
-    "FINANCIAL STRENGTH & DIVIDEND": 33,
-    "RECENT DEVELOPMENTS": 28,
-    "Key Statistics": 24,
-    "VALUATION": 20,
-    "EARNINGS & GROWTH ANALYSIS": 16,
-    "INVESTMENT THESIS": 15,
-    "Argus Research Disclaimer": 11,
-    "About Argus": 10,
-    "Peer & Industry Analysis": 8,
+    "Analyst's Notes...Continued": 35,
+    "FINANCIAL STRENGTH & DIVIDEND": 31,
+    "EARNINGS & GROWTH ANALYSIS": 30,
+    "Key Statistics": 27,
+    "VALUATION": 23,
+    "RECENT DEVELOPMENTS": 22,
+    "Argus Research Disclaimer": 15,
+    "Peer & Industry Analysis": 14,
+    "Financial & Risk Analysis": 13,
+    "INVESTMENT THESIS": 12,
+    "About Argus": 9,
     "ARGUS RATING: BUY": 6,
     "MANAGEMENT & RISKS": 6,
-    "COMPANY DESCRIPTION": 5,
-    "Argus Recommendations": 2,
-    "THE ARGUS RESEARCH RATING SYSTEM": 2
+    "COMPANY DESCRIPTION": 4,
+    "THE ARGUS RESEARCH RATING SYSTEM": 3
   },
   "confidence_stats": {
     "claim_type_confidence": {
-      "mean": 0.8874524714828897,
-      "std": 0.03750792058304323,
-      "min": 0.7,
+      "mean": 0.8868000000000001,
+      "std": 0.03391697872427808,
+      "min": 0.8,
       "max": 0.9
     },
     "subject_scope_confidence": {
-      "mean": 0.8931558935361218,
-      "std": 0.0307464767648957,
-      "min": 0.7,
+      "mean": 0.8860000000000002,
+      "std": 0.062124373244355685,
+      "min": 0.5,
       "max": 0.9
     },
     "sentence_type_confidence": {
-      "mean": 0.7479087452471483,
-      "std": 0.17923022221940288,
+      "mean": 0.8548000000000002,
+      "std": 0.0939802593985913,
       "min": 0.5,
       "max": 0.9
     }
   },
   "support_score_stats": {
-    "mean": 0.0,
-    "std": 0.0,
-    "min": 0.0,
-    "max": 0.0,
+    "mean": 0.32872,
+    "std": 0.5038135308778262,
+    "min": -1.0,
+    "max": 1.0,
     "median": 0.0,
     "distribution": {
-      "supported_0.9_plus": 0,
-      "partially_supported_0.5_0.89": 0,
-      "not_supported_below_0.5": 263
+      "supported_0.9_plus": 63,
+      "partially_supported_0.5_0.89": 44,
+      "not_supported_below_0.5": 143
     }
   }
 }

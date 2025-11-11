@@ -4,22 +4,22 @@ AR ANALYST DELTA I - EVALUATION REPORT
 
 OVERALL STATISTICS
 --------------------------------------------------------------------------------
-Total Sentences (all): 263
-Total Sentences (company_relevant): 263
+Total Sentences (all): 250
+Total Sentences (company_relevant): 250
 
 COVERAGE SUMMARY (Company Relevant Only)
 --------------------------------------------------------------------------------
-Total Sentences: 263
-Covered: 118 (44.9%)
-Not Covered: 140 (53.2%)
-Contradicted: 5 (1.9%)
+Total Sentences: 250
+Covered: 108 (43.2%)
+Not Covered: 132 (52.8%)
+Contradicted: 10 (4.0%)
 
 Breakdown:
-  - Supported: 62 (23.6%)
-  - Partially Supported: 56 (21.3%)
-  - Not Supported: 0 (0.0%)
-  - Contradicted: 5 (1.9%)
-  - No Evidence: 140 (53.2%)
+  - Supported: 63 (25.2%)
+  - Partially Supported: 45 (18.0%)
+  - Not Supported: 30 (12.0%)
+  - Contradicted: 10 (4.0%)
+  - No Evidence: 102 (40.8%)
 
 COVERAGE BY SOURCE TYPE (Company Relevant Only)
 --------------------------------------------------------------------------------
@@ -34,9 +34,9 @@ SOURCE TYPE DISTRIBUTION
 
 BY SENTENCE TYPE
 --------------------------------------------------------------------------------
-  - quantitative: 115 (43.7%)
-  - other: 87 (33.1%)
-  - qualitative: 61 (23.2%)
+  - quantitative: 121 (48.4%)
+  - qualitative: 114 (45.6%)
+  - other: 15 (6.0%)
 
 CONFIDENCE STATISTICS
 --------------------------------------------------------------------------------
@@ -46,27 +46,26 @@ Source Classification Confidence:
   - Range: 0.000 - 0.000
 
 Sentence Type Classification Confidence:
-  - Mean: 0.748
-  - Std Dev: 0.179
+  - Mean: 0.855
+  - Std Dev: 0.094
   - Range: 0.500 - 0.900
 
 BY SECTION
 --------------------------------------------------------------------------------
-  - Financial & Risk Analysis: 39 (14.8%)
-  - Analyst's Notes...Continued: 38 (14.4%)
-  - FINANCIAL STRENGTH & DIVIDEND: 33 (12.5%)
-  - RECENT DEVELOPMENTS: 28 (10.6%)
-  - Key Statistics: 24 (9.1%)
-  - VALUATION: 20 (7.6%)
-  - EARNINGS & GROWTH ANALYSIS: 16 (6.1%)
-  - INVESTMENT THESIS: 15 (5.7%)
-  - Argus Research Disclaimer: 11 (4.2%)
-  - About Argus: 10 (3.8%)
-  - Peer & Industry Analysis: 8 (3.0%)
-  - ARGUS RATING: BUY: 6 (2.3%)
-  - MANAGEMENT & RISKS: 6 (2.3%)
-  - COMPANY DESCRIPTION: 5 (1.9%)
-  - Argus Recommendations: 2 (0.8%)
-  - THE ARGUS RESEARCH RATING SYSTEM: 2 (0.8%)
+  - Analyst's Notes...Continued: 35 (14.0%)
+  - FINANCIAL STRENGTH & DIVIDEND: 31 (12.4%)
+  - EARNINGS & GROWTH ANALYSIS: 30 (12.0%)
+  - Key Statistics: 27 (10.8%)
+  - VALUATION: 23 (9.2%)
+  - RECENT DEVELOPMENTS: 22 (8.8%)
+  - Argus Research Disclaimer: 15 (6.0%)
+  - Peer & Industry Analysis: 14 (5.6%)
+  - Financial & Risk Analysis: 13 (5.2%)
+  - INVESTMENT THESIS: 12 (4.8%)
+  - About Argus: 9 (3.6%)
+  - ARGUS RATING: BUY: 6 (2.4%)
+  - MANAGEMENT & RISKS: 6 (2.4%)
+  - COMPANY DESCRIPTION: 4 (1.6%)
+  - THE ARGUS RESEARCH RATING SYSTEM: 3 (1.2%)
 
 ================================================================================
