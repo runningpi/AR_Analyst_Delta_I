@@ -41,21 +41,33 @@
   "confidence_stats": {
     "claim_type_confidence": {
       "mean": 0.8874524714828897,
-      "std": 0.037507920583043176,
+      "std": 0.03750792058304323,
       "min": 0.7,
       "max": 0.9
     },
     "subject_scope_confidence": {
       "mean": 0.8931558935361218,
-      "std": 0.03074647676489562,
+      "std": 0.0307464767648957,
       "min": 0.7,
       "max": 0.9
     },
     "sentence_type_confidence": {
       "mean": 0.7479087452471483,
-      "std": 0.1792302222194026,
+      "std": 0.17923022221940288,
       "min": 0.5,
       "max": 0.9
+    }
+  },
+  "support_score_stats": {
+    "mean": 0.0,
+    "std": 0.0,
+    "min": 0.0,
+    "max": 0.0,
+    "median": 0.0,
+    "distribution": {
+      "supported_0.9_plus": 0,
+      "partially_supported_0.5_0.89": 0,
+      "not_supported_below_0.5": 263
     }
   }
 }

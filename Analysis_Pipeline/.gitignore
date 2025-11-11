@@ -47,32 +47,32 @@ logging/
 #output/
 
 # Output files
-# *.json
+*.json
 !settings.json
 !package.json
 
 # Knowledge base storage
-# RAG_and_knowledgebase/kb_storage/
-# */kb_storage/
+ RAG_and_knowledgebase/kb_storage/
+ */kb_storage/
 
 # Data directories
-# 00_data/AMD/
-# 00_data/*/
+ 00_data/AMD/
+ 00_data/*/
 
 # OCR content (can be large, regenerate from PDFs)
-#Decomposition_AR/ocr_content/*/
+Decomposition_AR/ocr_content/*/
 
 # Classified sentences cache (can regenerate)
-#Decomposition_AR/output/classified_sentences/*/
+Decomposition_AR/output/classified_sentences/*/
 
 # RAG query results cache (can regenerate)
-#RAG_and_knowledgebase/output/*/
+RAG_and_knowledgebase/output/*/
 
 # Evaluation results cache (can regenerate)
-#Evaluation/output/*/
+Evaluation/output/*/
 
 # Final analysis and reports (can regenerate)
-#Analysis/output/*/
+Analysis/output/*/
 
 # Temporary files
 *.tmp
