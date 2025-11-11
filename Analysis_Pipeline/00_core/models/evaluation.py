@@ -20,6 +20,8 @@ class EvaluationResult(BaseModel):
     
     evaluation: EvaluationLabel = Field(..., description="Evaluation label")
     reason: str = Field(..., description="Explanation for the evaluation")
+    support_score: float = Field(..., description="Support score from 0.0 to 1.0 (0.9+ = Supported, 0.5-0.89 = Partially Supported, <0.5 = Not Supported)")
+    delta_analysis: Optional[str] = Field(None, description="Detailed delta analysis for Partially Supported items (what's missing/different)")
     
     @classmethod
     def from_llm_response(cls, response_dict: dict) -> "EvaluationResult":
@@ -32,9 +34,36 @@ class EvaluationResult(BaseModel):
         except ValueError:
             eval_label = EvaluationLabel.UNKNOWN
         
+        # Extract support score (0.0-1.0)
+        # Default based on evaluation label if not provided
+        support_score = response_dict.get("support_score")
+        if support_score is None:
+            # Infer from evaluation label if score not provided (backward compatibility)
+            if eval_label == EvaluationLabel.SUPPORTED:
+                support_score = 0.95  # Default high score for supported
+            elif eval_label == EvaluationLabel.PARTIALLY_SUPPORTED:
+                support_score = 0.7  # Default mid score for partially supported
+            elif eval_label == EvaluationLabel.CONTRADICTED:
+                support_score = -1.0
+            elif eval_label == EvaluationLabel.NO_EVIDENCE:
+                support_score = 0.0
+            else:
+                support_score = 0.0
+        else:
+            support_score = float(support_score)
+        
+        # Clamp to valid range (except -1.0 for contradicted)
+        if support_score != -1.0:
+            support_score = max(0.0, min(1.0, support_score))
+        
+        # Extract delta analysis if present
+        delta_analysis = response_dict.get("delta_analysis", None)
+        
         return cls(
             evaluation=eval_label,
-            reason=response_dict.get("reason", "")
+            reason=response_dict.get("reason", ""),
+            support_score=support_score,
+            delta_analysis=delta_analysis
         )
 
 
@@ -54,6 +83,8 @@ class SentenceEvaluation(BaseModel):
     evidence: List[str] = Field(default_factory=list, description="Evidence texts from KB")
     evaluation: EvaluationLabel = Field(..., description="Evaluation label")
     reason: str = Field(..., description="Explanation for the evaluation")
+    support_score: float = Field(..., description="Support score from 0.0 to 1.0 (0.9+ = Supported, 0.5-0.89 = Partially Supported, <0.5 = Not Supported)")
+    delta_analysis: Optional[str] = Field(None, description="Detailed delta analysis for Partially Supported items (what's missing/different)")
     
     def to_dict(self) -> dict:
         """Convert to dictionary for JSON serialization."""
@@ -73,6 +104,8 @@ class SentenceEvaluation(BaseModel):
             "evidence": self.evidence,
             "evaluation": eval_value,
             "reason": self.reason,
+            "support_score": self.support_score,
+            "delta_analysis": self.delta_analysis,
         }
     
     class Config:

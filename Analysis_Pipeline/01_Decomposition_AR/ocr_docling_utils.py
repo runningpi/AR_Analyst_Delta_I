@@ -41,6 +41,126 @@ class TextCleaner:
         return text
 
 
+class TemplateFilter:
+    """Filter out template/boilerplate content before decomposition."""
+    
+    # Keywords and patterns that indicate template/boilerplate content
+    TEMPLATE_KEYWORDS = [
+        # Disclaimers and legal notices
+        r'\bdisclaimer\b', r'\blegal notice\b', r'\brisk warning\b', r'\bforward-looking statement\b',
+        r'\bcautionary statement\b', r'\bimportant notice\b', r'\bconfidential\b',
+        # Rating system explanations
+        r'\brating system\b', r'\brating scale\b', r'\brating methodology\b',
+        r'\boutperform\b.*\brating\b', r'\bunderperform\b.*\brating\b',
+        # Analyst company information
+        r'\bthis report\b.*\bprepared by\b', r'\bprepared by\b.*\banalyst\b',
+        r'\bfor more information\b', r'\bcontact us\b', r'\bvisit our website\b',
+        # Standard template headers/footers
+        r'\bpage \d+\b', r'\bconfidential and proprietary\b',
+        r'\bnot for distribution\b', r'\bfor internal use only\b',
+    ]
+    
+    # Section names that are typically boilerplate
+    BOILERPLATE_SECTIONS = [
+        'disclaimer', 'legal notice', 'risk warning', 'important notice',
+        'rating system', 'rating methodology', 'about the analyst',
+        'contact information', 'confidentiality notice',
+    ]
+    
+    @classmethod
+    def is_boilerplate_section(cls, section_name: str) -> bool:
+        """
+        Check if a section name indicates boilerplate content.
+        
+        Args:
+            section_name: Name of the section
+            
+        Returns:
+            True if section is likely boilerplate
+        """
+        section_lower = section_name.lower()
+        return any(keyword in section_lower for keyword in cls.BOILERPLATE_SECTIONS)
+    
+    @classmethod
+    def is_boilerplate_text(cls, text: str) -> bool:
+        """
+        Check if text contains boilerplate content.
+        
+        Args:
+            text: Text to check
+            
+        Returns:
+            True if text appears to be boilerplate
+        """
+        if not text or len(text.strip()) < 20:  # Very short text might be noise
+            return False
+        
+        text_lower = text.lower()
+        
+        # Check for template keywords
+        keyword_matches = sum(1 for pattern in cls.TEMPLATE_KEYWORDS if re.search(pattern, text_lower, re.IGNORECASE))
+        
+        # If multiple keywords match, likely boilerplate
+        if keyword_matches >= 2:
+            return True
+        
+        # Check for high density of legal/disclaimer language
+        legal_indicators = ['disclaimer', 'legal', 'risk', 'warning', 'confidential', 'proprietary']
+        legal_count = sum(1 for word in legal_indicators if word in text_lower)
+        
+        # If text is short and has multiple legal indicators, likely boilerplate
+        if len(text) < 200 and legal_count >= 2:
+            return True
+        
+        return False
+    
+    @classmethod
+    def filter_sections(cls, sections: Dict[str, List[str]]) -> Dict[str, List[str]]:
+        """
+        Filter out boilerplate sections and sentences from sections dictionary.
+        
+        Args:
+            sections: Dictionary mapping section names to sentence lists
+            
+        Returns:
+            Filtered dictionary with boilerplate removed
+        """
+        filtered = {}
+        removed_sections = []
+        removed_sentences = 0
+        total_sentences = 0
+        
+        for section_name, sentences in sections.items():
+            total_sentences += len(sentences)
+            
+            # Skip entire section if it's boilerplate
+            if cls.is_boilerplate_section(section_name):
+                removed_sections.append(section_name)
+                removed_sentences += len(sentences)
+                logger.info(f"Filtered out boilerplate section: '{section_name}' ({len(sentences)} sentences)")
+                continue
+            
+            # Filter sentences within section
+            filtered_sentences = []
+            for sentence in sentences:
+                if not cls.is_boilerplate_text(sentence):
+                    filtered_sentences.append(sentence)
+                else:
+                    removed_sentences += 1
+            
+            # Only add section if it has remaining sentences
+            if filtered_sentences:
+                filtered[section_name] = filtered_sentences
+        
+        logger.info(
+            f"Template filtering complete: "
+            f"Removed {len(removed_sections)} sections, {removed_sentences}/{total_sentences} sentences "
+            f"({removed_sentences/total_sentences*100:.1f}% filtered)"
+        )
+        
+        return filtered
+
+
 class SentenceSplitter:
     """Split text into sentences with abbreviation handling."""
     
@@ -174,12 +294,13 @@ class DoclingParser:
             if not use_gpu and 'CUDA_VISIBLE_DEVICES' in os.environ:
                 del os.environ['CUDA_VISIBLE_DEVICES']
     
-    def parse_sections_from_text(self, text_dict: Dict[str, str]) -> Dict[str, List[str]]:
+    def parse_sections_from_text(self, text_dict: Dict[str, str], filter_templates: bool = True) -> Dict[str, List[str]]:
         """
         Parse text dictionary into sections with sentences.
         
         Args:
             text_dict: Dictionary mapping section names to section text
+            filter_templates: Whether to filter out template/boilerplate content (default: True)
             
         Returns:
             Dictionary mapping section names to lists of sentences
@@ -197,10 +318,14 @@ class DoclingParser:
             results[section_name] = sentences
             logger.debug(f"Section '{section_name}': {len(sentences)} sentences")
         
+        # Filter out template/boilerplate content before returning
+        if filter_templates:
+            results = TemplateFilter.filter_sections(results)
+        
         logger.info(f"Parsed total of {sum(len(s) for s in results.values())} sentences")
         return results
     
-    def parse_markdown_to_sections(self, markdown_text: str) -> Dict[str, List[str]]:
+    def parse_markdown_to_sections(self, markdown_text: str, filter_templates: bool = True) -> Dict[str, List[str]]:
         """
         Parse markdown text into sections based on headers.
         
@@ -208,6 +333,7 @@ class DoclingParser:
         
         Args:
             markdown_text: Markdown text from Docling
+            filter_templates: Whether to filter out template/boilerplate content (default: True)
             
         Returns:
             Dictionary mapping section names to lists of sentences
@@ -262,6 +388,10 @@ class DoclingParser:
             sentences = self.sentence_splitter.split_sentences(cleaned)
             sections["Full Document"] = sentences
         
+        # Filter out template/boilerplate content before returning
+        if filter_templates:
+            sections = TemplateFilter.filter_sections(sections)
+        
         logger.info(f"Parsed {len(sections)} sections from markdown")
         return sections
     
@@ -271,7 +401,8 @@ class DoclingParser:
         use_gpu: bool = False,
         save_ocr_output: bool = True,
         ocr_output_base_dir: Path = None,
-        use_cached: bool = True
+        use_cached: bool = True,
+        filter_templates: bool = True
     ) -> Dict[str, List[str]]:
         """
         Parse PDF directly into sections with sentences.
@@ -336,8 +467,8 @@ class DoclingParser:
         # Extract text from PDF using Docling (with CPU by default)
         markdown_text = self.extract_text_from_pdf(pdf_path, use_gpu=use_gpu)
         
-        # Parse markdown into sections
-        sections = self.parse_markdown_to_sections(markdown_text)
+        # Parse markdown into sections (with template filtering)
+        sections = self.parse_markdown_to_sections(markdown_text, filter_templates=filter_templates)
         
         # Save OCR output if requested
         if save_ocr_output:

@@ -53,6 +53,8 @@ class EvaluationAnalyzer:
                     "content_relevance_confidence": float(eval_item.get("content_relevance_confidence", 0.5)),
                     "evaluation": eval_item.get("evaluation", ""),
                     "reason": eval_item.get("reason", ""),
+                    "support_score": float(eval_item.get("support_score", 0.0)),
+                    "delta_analysis": eval_item.get("delta_analysis", None),
                     "evidence_count": len(eval_item.get("evidence", [])),
                 })
         
@@ -60,7 +62,7 @@ class EvaluationAnalyzer:
         expected_columns = [
             "section", "sentence", "claim_type", "subject_scope", "sentence_type", "content_relevance",
             "claim_type_confidence", "subject_scope_confidence", "sentence_type_confidence", "content_relevance_confidence",
-            "evaluation", "reason", "evidence_count"
+            "evaluation", "reason", "support_score", "delta_analysis", "evidence_count"
         ]
         
         df = pd.DataFrame(rows)
@@ -69,7 +71,10 @@ class EvaluationAnalyzer:
         if df.empty:
             for col in expected_columns:
                 if col not in df.columns:
-                    df[col] = pd.Series(dtype='object' if col in ["section", "sentence", "claim_type", "subject_scope", "sentence_type", "content_relevance", "evaluation", "reason"] else 'float64')
+                    if col in ["section", "sentence", "claim_type", "subject_scope", "sentence_type", "content_relevance", "evaluation", "reason", "delta_analysis"]:
+                        df[col] = pd.Series(dtype='object')
+                    else:
+                        df[col] = pd.Series(dtype='float64')
         
         return df
     
@@ -157,6 +162,28 @@ class EvaluationAnalyzer:
         else:
             confidence_stats["sentence_type_confidence"] = {"mean": 0.0, "std": 0.0, "min": 0.0, "max": 0.0}
         
+        # Support score statistics
+        support_score_stats = {}
+        if "support_score" in self.df.columns and not self.df["support_score"].isna().all():
+            support_score_stats = {
+                "mean": float(self.df["support_score"].mean()),
+                "std": float(self.df["support_score"].std()),
+                "min": float(self.df["support_score"].min()),
+                "max": float(self.df["support_score"].max()),
+                "median": float(self.df["support_score"].median()),
+                # Distribution by score ranges
+                "distribution": {
+                    "supported_0.9_plus": int(len(self.df[self.df["support_score"] >= 0.9])),
+                    "partially_supported_0.5_0.89": int(len(self.df[(self.df["support_score"] >= 0.5) & (self.df["support_score"] < 0.9)])),
+                    "not_supported_below_0.5": int(len(self.df[self.df["support_score"] < 0.5])),
+                }
+            }
+        else:
+            support_score_stats = {
+                "mean": 0.0, "std": 0.0, "min": 0.0, "max": 0.0, "median": 0.0,
+                "distribution": {"supported_0.9_plus": 0, "partially_supported_0.5_0.89": 0, "not_supported_below_0.5": 0}
+            }
+        
         stats = {
             "total_sentences": total,
             "by_evaluation": eval_counts,
@@ -165,6 +192,7 @@ class EvaluationAnalyzer:
             "by_sentence_type": sentence_type_counts,
             "by_section": section_counts,
             "confidence_stats": confidence_stats,
+            "support_score_stats": support_score_stats,
         }
         
         logger.info(f"Generated overall stats for {total} sentences")

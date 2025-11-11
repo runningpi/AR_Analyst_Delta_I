@@ -31,15 +31,37 @@ class EvaluationService:
     
     SYSTEM_PROMPT = """You are an expert financial analyst.
 Evaluate whether the provided Knowledge Base evidence supports the snippet.
-Return a JSON object with two keys:
-- evaluation: one of [Supported, Partially Supported, Contradicted, No Evidence]
-- reason: a short explanation.
+Return a JSON object with the following keys:
+- evaluation: one of [Supported, Partially Supported, Contradicted, Not Supported, No Evidence]
+- reason: a short explanation
+- support_score: a numeric score from 0.0 to 1.0 indicating the degree of support
+  * 0.9-1.0: Fully supported (use "Supported" label)
+  * 0.5-0.89: Partially supported (use "Partially Supported" label)
+  * 0.0-0.49: Not supported (use "Not Supported" label)
+  * -1.0: Contradicted (use "Contradicted" label)
+  * 0.0: No evidence (use "No Evidence" label)
 
 Definitions:
-- Supported: The evidence fully backs the claim in the snippet
-- Partially Supported: The evidence partially backs the claim, but some aspects are missing
-- Contradicted: The evidence directly contradicts the claim
-- No Evidence: No relevant evidence was found in the knowledge base
+- Supported (0.9-1.0): The evidence fully backs the claim in the snippet
+- Partially Supported (0.5-0.89): The evidence partially backs the claim, but some aspects are missing
+- Not Supported (0.0-0.49): The evidence does not support the claim
+- Contradicted (-1.0): The evidence directly contradicts the claim
+- No Evidence (0.0): No relevant evidence was found in the knowledge base
+
+Be precise with your support_score. A score of 0.9 or higher should be directly recognized as "Supported".
+"""
+    
+    DELTA_ANALYSIS_PROMPT = """You are an expert financial analyst.
+Analyze the delta between the snippet claim and the evidence for a Partially Supported evaluation.
+
+Provide a detailed analysis of:
+1. What aspects of the claim ARE supported by the evidence
+2. What aspects of the claim are MISSING from the evidence
+3. What differences exist (if any) - e.g., different numbers, timeframes, or interpretations
+4. Quantify differences where possible (e.g., "Evidence shows 10% growth, snippet claims 15%")
+
+Return a JSON object with:
+- delta_analysis: A detailed explanation of what's missing or different
 """
     
     def __init__(self, model: str = "gpt-4o-mini"):
@@ -58,6 +80,7 @@ Definitions:
         self,
         sentence: str,
         evidence_texts: List[str],
+        section: str = None,
     ) -> EvaluationResult:
         """
         Evaluate a single sentence against evidence.
@@ -65,23 +88,28 @@ Definitions:
         Args:
             sentence: Sentence to evaluate
             evidence_texts: List of evidence text strings
+            section: Section name where the sentence appears (for context)
             
         Returns:
-            EvaluationResult with label and reason
+            EvaluationResult with label, reason, and support_score
         """
         # Check if evidence exists
         if not self.evidence_formatter.has_evidence(evidence_texts):
             return EvaluationResult(
                 evaluation=EvaluationLabel.NO_EVIDENCE,
-                reason="No evidence found in knowledge base"
+                reason="No evidence found in knowledge base",
+                support_score=0.0,
+                delta_analysis=None
             )
         
         # Format evidence
         evidence_combined = self.evidence_formatter.format_evidence(evidence_texts)
         
-        # Create prompt
+        # Create prompt with section context
+        section_context = f"\n\nContext: This snippet appears in the '{section}' section of the analyst report." if section else ""
+        
         user_prompt = f"""Snippet:
-{sentence}
+{sentence}{section_context}
 
 Evidence from Knowledge Base:
 {evidence_combined}
@@ -102,7 +130,14 @@ Evidence from Knowledge Base:
             parsed = json.loads(raw_response)
             
             result = EvaluationResult.from_llm_response(parsed)
-            logger.debug(f"Evaluated sentence: {result.evaluation.value}")
+            
+            # Adjust evaluation label based on support_score if needed
+            # If support_score >= 0.9, it should be "Supported"
+            if result.support_score >= 0.9 and result.evaluation == EvaluationLabel.PARTIALLY_SUPPORTED:
+                result.evaluation = EvaluationLabel.SUPPORTED
+                logger.debug(f"Upgraded to Supported based on support_score {result.support_score}")
+            
+            logger.debug(f"Evaluated sentence: {result.evaluation.value} (score: {result.support_score:.2f})")
             
             return result
             
@@ -110,8 +145,65 @@ Evidence from Knowledge Base:
             logger.error(f"Evaluation failed: {e}", exc_info=True)
             return EvaluationResult(
                 evaluation=EvaluationLabel.UNKNOWN,
-                reason=f"Evaluation error: {str(e)}"
+                reason=f"Evaluation error: {str(e)}",
+                support_score=0.0,
+                delta_analysis=None
             )
+    
+    def evaluate_partially_supported_delta(
+        self,
+        sentence: str,
+        evidence_texts: List[str],
+        section: str = None,
+    ) -> str:
+        """
+        Perform deep-dive delta analysis for Partially Supported items.
+        
+        Args:
+            sentence: Sentence that was evaluated as Partially Supported
+            evidence_texts: List of evidence text strings
+            section: Section name where the sentence appears (for context)
+            
+        Returns:
+            Detailed delta analysis string
+        """
+        # Format evidence
+        evidence_combined = self.evidence_formatter.format_evidence(evidence_texts)
+        
+        # Create prompt with section context
+        section_context = f"\n\nContext: This snippet appears in the '{section}' section of the analyst report." if section else ""
+        
+        user_prompt = f"""Snippet:
+{sentence}{section_context}
+
+Evidence from Knowledge Base:
+{evidence_combined}
+
+This snippet was evaluated as "Partially Supported". Provide a detailed delta analysis.
+"""
+        
+        try:
+            # Call LLM for delta analysis
+            response = self.client.chat.completions.create(
+                model=self.model,
+                response_format={"type": "json_object"},
+                messages=[
+                    {"role": "system", "content": self.DELTA_ANALYSIS_PROMPT},
+                    {"role": "user", "content": user_prompt},
+                ],
+            )
+            
+            raw_response = response.choices[0].message.content.strip()
+            parsed = json.loads(raw_response)
+            
+            delta_analysis = parsed.get("delta_analysis", "Delta analysis not available")
+            logger.debug(f"Generated delta analysis for Partially Supported item")
+            
+            return delta_analysis
+            
+        except Exception as e:
+            logger.error(f"Delta analysis failed: {e}", exc_info=True)
+            return f"Delta analysis error: {str(e)}"
     
     def evaluate_query_results(
         self,
@@ -159,8 +251,16 @@ Evidence from Knowledge Base:
                 # Extract evidence content for evaluation
                 evidence_content = self.evidence_formatter.extract_evidence_content(evidence)
                 
-                # Evaluate
-                eval_result = self.evaluate_sentence(sentence, evidence_content)
+                # Evaluate with section context
+                eval_result = self.evaluate_sentence(sentence, evidence_content, section=section_name)
+                
+                # Perform delta analysis for Partially Supported items
+                delta_analysis = None
+                if eval_result.evaluation == EvaluationLabel.PARTIALLY_SUPPORTED:
+                    delta_analysis = self.evaluate_partially_supported_delta(
+                        sentence, evidence_content, section=section_name
+                    )
+                    eval_result.delta_analysis = delta_analysis
                 
                 # Extract evidence content strings for SentenceEvaluation model
                 evidence_strings = []
@@ -186,6 +286,8 @@ Evidence from Knowledge Base:
                     evidence=evidence_strings,
                     evaluation=eval_result.evaluation,
                     reason=eval_result.reason,
+                    support_score=eval_result.support_score,
+                    delta_analysis=eval_result.delta_analysis,
                 )
                 
                 section_evals.append(sentence_eval)
